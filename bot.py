@@ -137,7 +137,7 @@ class GameChannel:
             while(s_player1.hp > 0 and s_player2.hp > 0):
                 random_slugs = get_random_slugs()
                 await channel.send('Slugs: ' + beautify_slugs(random_slugs), delete_after=5, silent=True)
-                time.sleep(4)
+                await asyncio.sleep(4)
                 shotgun.load_slugs(random_slugs)
                 for _ in range(0, random.randint(1, 3)):
                     s_player1.add_item_to_inventory()
@@ -214,7 +214,7 @@ class GameChannel:
                                             await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
                                         else:
                                             await channel.send('...click', silent=True)
-                                        time.sleep(3)
+                                        await asyncio.sleep(3)
                                         break
                                     case '🔽':
                                         await asyncio.sleep(1)
@@ -228,7 +228,7 @@ class GameChannel:
                                             await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
                                         else:
                                             await channel.send('...click', silent=True)
-                                        time.sleep(3)
+                                        await asyncio.sleep(3)
                                         break
                                     case '⏭️':
                                         skip_tutorial_users.append(shotgun.current_holder.name)
@@ -248,7 +248,7 @@ class GameChannel:
         loser = s_player1 if s_player1.hp <= 0 else s_player2
         win_message = random.choice(cool_win_messages)
         await channel.send(win_message.format(winner=winner.name, loser=loser.name), silent=True)
-        time.sleep(10)
+        await asyncio.sleep(10)
         await channel.purge()
         await self.init_game_channel()
 
@@ -293,7 +293,7 @@ class ShotgunGameBot(discord.Client):
                         )
                         return
             await channel.send(
-                'No available channels, sorry ' + message.author.mention + '!',
+                'No available channels, sorry ' + message.author.mention + '! Try again later',
                 delete_after=10,
                 silent=True
             )
