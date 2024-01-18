@@ -244,14 +244,9 @@ class GameChannel:
         except asyncio.TimeoutError:
             await channel.purge()
             await self.init_game_channel()
-        winner = None
-        loser = None
+        winner = s_player1 if s_player1.hp > 0 else s_player2
+        loser = s_player1 if s_player1.hp <= 0 else s_player2
         win_message = random.choice(cool_win_messages)
-        for player in (s_player1, s_player2):
-            if player.hp > 0:
-                winner = player
-            else:
-                loser = player
         await channel.send(win_message.format(winner=winner.name, loser=loser.name), silent=True)
         time.sleep(10)
         await channel.purge()
