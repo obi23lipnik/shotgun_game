@@ -276,7 +276,6 @@ class ShotgunGameBot(discord.Client):
             loop.create_task(ch.init_game_channel())
 
     async def on_message(self, message):
-        print(message.content)
         if message.content.startswith('!shotgun'):
             channel = message.channel
             for game_channel in game_channels:
