@@ -13,6 +13,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.moderation = True
 game_channels = []
+skip_tutorial_users = []
 
 def get_everyone_role(server_roles):
     for role in server_roles:
@@ -153,18 +154,27 @@ class GameChannel:
                     else:
                         await channel.send(player1_stats, silent=True)
                         active_player_stats = await channel.send(player2_stats, silent=True)
-
-                    message = await channel.send(
+                    full_instructions = (
                         'Turn: ' + shotgun.current_holder.name + '\n'
                         'Click a reaction under your item to use it.\n' +
                         ''.join('{}: {}\n'.format(items_list[i], items_description[i]) for i in range(1, len(items_list) + 1)) +
                         'Click a reaction below to take your action\n'
                         '🔼 - Shoot opponent\n'
-                        '🔽 - Shoot yourself (skip opponent if blank)',
-                        silent=True
+                        '🔽 - Shoot yourself (skip opponent if blank)\n'
+                        '⏭️ - Remove instructions'
                     )
-                    add_reaction_async(message, '🔼')
-                    add_reaction_async(message, '🔽')
+                    short_instructions = 'Turn: ' + shotgun.current_holder.name
+                    message = None
+                    if shotgun.current_holder.name in skip_tutorial_users:
+                        message = await channel.send(short_instructions, silent=True)
+                        add_reaction_async(message, '🔼')
+                        add_reaction_async(message, '🔽')
+                        add_reaction_async(message, 'ℹ️')
+                    else:
+                        message = await channel.send(full_instructions, silent=True)
+                        add_reaction_async(message, '🔼')
+                        add_reaction_async(message, '🔽')
+                        add_reaction_async(message, '⏭️')
                     b_inventory = shotgun.current_holder.get_beautiful_inv()
                     for i in range(0, len(b_inventory)):
                         add_reaction_async(active_player_stats, b_nums[i+1])
@@ -220,6 +230,15 @@ class GameChannel:
                                             await channel.send('...click', silent=True)
                                         time.sleep(3)
                                         break
+                                    case '⏭️':
+                                        skip_tutorial_users.append(shotgun.current_holder.name)
+                                        await channel.purge()
+                                        break
+                                    case 'ℹ️':
+                                        skip_tutorial_users.pop(skip_tutorial_users.index(shotgun.current_holder.name))
+                                        await channel.purge()
+                                        break
+
                                     case _:
                                         continue
         except asyncio.TimeoutError:
