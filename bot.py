@@ -296,6 +296,7 @@ class ShotgunGameBot(discord.Client):
                 delete_after=10,
                 silent=True
             )
+            message.delete()
         
 
 client = ShotgunGameBot(intents=intents)
