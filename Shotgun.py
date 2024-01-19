@@ -24,13 +24,9 @@ def cause_effect(itemNumber, shotgun):
             return False, None
         case 6:
             current_bullets = shotgun.slugs[:]
-            current_bullets.append(0)
-            shotgun.load_slugs(current_bullets)
-            return True, None
-        case 7:
-            current_bullets = shotgun.slugs[:]
-            current_bullets.append(1)
-            shotgun.load_slugs(current_bullets)
+            current_bullets.append(current_bullets[-1])
+            current_bullets[-2] = 1
+            shotgun.slugs = current_bullets
             return True, None
         case _:
             return False, None

@@ -4,8 +4,7 @@ items_list = {
     3: '🍺',
     4: '🔎',
     5: '🔗',
-    6: '⬜',
-    7: '🟥',
+    6: '🟥',
 }
 
 items_description = {
@@ -14,8 +13,7 @@ items_description = {
     3: 'Unload 1 slug',
     4: 'Check chamber',
     5: 'Skip opponent\'s turn',
-    6: 'Add blank and reshuffle',
-    7: 'Add slug and reshuffle',
+    6: 'Add live slug after next one',
 }
 
 b_slugs = {
@@ -29,8 +27,7 @@ b_items = {
     3: '🍺',
     4: '🔎',
     5: '🔗',
-    6: '⬜',
-    7: '🟥',
+    6: '🟥',
 }
 
 b_nums = {
