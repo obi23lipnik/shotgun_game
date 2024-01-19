@@ -146,14 +146,14 @@ class GameChannel:
                     s_player2.add_item_to_inventory()
                 async with channel.typing():
                     for i in range(0, len(log_messages)):
-                        log_messages[i].delete()
+                        await log_messages[i].delete()
                         log_messages.pop(i)
                 random_slugs = get_random_slugs()
                 
                 async with channel.typing():
                     slugs_message = await channel.send('Slugs: ' + beautify_slugs(random_slugs), delete_after=5, silent=True)
                     await asyncio.sleep(4)
-                slugs_message.delete()
+                await slugs_message.delete()
                 shotgun.load_slugs(random_slugs)
                 active_player_stats = None
                 inactive_player_stats = None
@@ -162,9 +162,9 @@ class GameChannel:
                     player1_stats = get_player_stats(s_player1, shotgun)
                     player2_stats = get_player_stats(s_player2, shotgun)
                     if active_player_stats:
-                        active_player_stats.delete()
+                        await active_player_stats.delete()
                     if inactive_player_stats:
-                        inactive_player_stats.delete()
+                        await inactive_player_stats.delete()
                     async with channel.typing():
                         if shotgun.current_holder == s_player1:
                             active_player_stats = await channel.send(player1_stats, silent=True)
@@ -373,7 +373,7 @@ class ShotgunGameBot(discord.Client):
                 delete_after=10,
                 silent=True
             )
-            message.delete()
+            await message.delete()
         
 
 client = ShotgunGameBot(intents=intents)
