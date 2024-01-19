@@ -37,6 +37,19 @@ def add_reaction_async(message, emoji):
     loop = asyncio.get_event_loop()
     loop.create_task(message.add_reaction(emoji))
 
+def get_instructions(shotgun, full=True):
+    if full:
+        return (
+            'Turn: ' + shotgun.current_holder.name + '\n'
+            'Click a reaction under your item to use it.\n' +
+            ''.join('{}: {}\n'.format(items_list[i], items_description[i]) for i in range(1, len(items_list) + 1)) +
+            'Click a reaction below to take your action\n'
+            '🔼 - Shoot opponent\n'
+            '🔽 - Shoot yourself (skip opponent if blank)\n'
+            '⏭️ - Remove instructions'
+        )
+    else:
+        return 'Turn: ' + shotgun.current_holder.name
 
 class GameChannel:
     client = None
@@ -235,12 +248,12 @@ class GameChannel:
                     else:
                         if not instructions:
                             if shotgun.current_holder.name in skip_tutorial_users:
-                                instructions = await channel.send(short_instructions, silent=True)
+                                instructions = await channel.send(get_instructions(shotgun, False), silent=True)
                                 add_reaction_async(instructions, '🔼')
                                 add_reaction_async(instructions, '🔽')
                                 add_reaction_async(instructions, 'ℹ️')
                             else:
-                                instructions = await channel.send(full_instructions, silent=True)
+                                instructions = await channel.send(get_instructions(shotgun, True), silent=True)
                                 add_reaction_async(instructions, '🔼')
                                 add_reaction_async(instructions, '🔽')
                                 add_reaction_async(instructions, '⏭️')
@@ -312,16 +325,16 @@ class GameChannel:
                                             break
                                         case '⏭️':
                                             skip_tutorial_users.append(shotgun.current_holder.name)
-                                            await instructions.edit(content=short_instructions)
-                                            await instructions.clear_reactions()
+                                            await instructions.delete()
+                                            instructions = await channel.send(get_instructions(shotgun, False), silent=True)
                                             add_reaction_async(instructions, '🔼')
                                             add_reaction_async(instructions, '🔽')
                                             add_reaction_async(instructions, 'ℹ️')
                                             break
                                         case 'ℹ️':
                                             skip_tutorial_users.pop(skip_tutorial_users.index(shotgun.current_holder.name))
-                                            await instructions.edit(content=full_instructions)
-                                            await instructions.clear_reactions()
+                                            await instructions.delete()
+                                            instructions = await channel.send(get_instructions(shotgun, True), silent=True)
                                             add_reaction_async(instructions, '🔼')
                                             add_reaction_async(instructions, '🔽')
                                             add_reaction_async(instructions, '⏭️')
