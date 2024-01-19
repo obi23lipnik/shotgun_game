@@ -51,7 +51,7 @@ class AiOp:
                 return True, 4, effect
         if 3 in items:
             if self.live_slugs + self.blank_slugs >= 2:
-                if 0.33 < self.live_percentage < 0.67:
+                if not self.knows_next and 0.33 < self.live_percentage < 0.67:
                     _, effect = cause_effect(3, self.shotgun)
                     self.player_obj.inventory.pop(items.index(3))
                     return True, 3, effect
