@@ -206,7 +206,7 @@ class GameChannel:
                             await asyncio.sleep(3)
                             current_damage = shotgun.dmg
                             current_opponent = shotgun.current_opponent.name
-                            shot_live = shotgun.shoot_self()
+                            shot_live = shotgun.shoot_opponent()
                             if shot_live:
                                 await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
                             else:
