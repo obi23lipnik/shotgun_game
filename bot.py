@@ -244,9 +244,11 @@ class GameChannel:
                                             await asyncio.sleep(5)
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
                                         await active_player_stats.clear_reactions()
-                                        active_player_stats = await channel.send(get_inventory_display(shotgun.current_holder))
-                                        for i in range(0, len(shotgun.current_holder.get_beautiful_inv())):
-                                            add_reaction_async(active_player_stats, b_nums[i+1])
+                                        new_inventory = shotgun.current_holder.get_beautiful_inv()
+                                        if new_inventory:
+                                            active_player_stats = await channel.send(get_inventory_display(shotgun.current_holder))
+                                            for i in range(0, len(new_inventory)):
+                                                add_reaction_async(active_player_stats, b_nums[i+1])
                                     else:
                                         await channel.send('Can\'t use that item right now...', delete_after=3, silent=True)
                                 else:
