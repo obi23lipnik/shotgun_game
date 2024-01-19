@@ -73,7 +73,8 @@ class Shotgun:
     def load_slugs(self, slugs=get_random_slugs()):
         random.shuffle(slugs)
         self.slugs = slugs
-        self.aiop.load_data()
+        if self.aiop:
+            self.aiop.load_data()
     
     def unload_slug(self):
         slug = self.slugs[0]
@@ -81,8 +82,9 @@ class Shotgun:
             self.slugs = []
         else:
             self.slugs = self.slugs[1:]
-        self.aiop.cycle_bullet()
-        self.aiop.load_data()
+        if self.aiop:
+            self.aiop.cycle_bullet()
+            self.aiop.load_data()
         return slug
     
     def switch_holder(self):

@@ -257,9 +257,10 @@ class GameChannel:
                                     match reaction.emoji:
                                         case '🔼':
                                             current_damage = shotgun.dmg
+                                            current_holder = shotgun.current_holder.name
                                             current_opponent = shotgun.current_opponent.name
                                             shot_live = shotgun.shoot_opponent()
-                                            await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at ' + shotgun.current_opponent.name, silent=True)
+                                            await channel.send(current_holder + ' aims the barell of the shotgun at ' + current_opponent, silent=True)
                                             async with channel.typing():
                                                 await asyncio.sleep(5)
                                             if shot_live:
@@ -272,7 +273,7 @@ class GameChannel:
                                             current_damage = shotgun.dmg
                                             current_holder = shotgun.current_holder.name
                                             shot_live = shotgun.shoot_self()
-                                            await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at themself', silent=True)
+                                            await channel.send(current_holder + ' aims the barell of the shotgun at themself', silent=True)
                                             async with channel.typing():
                                                 await asyncio.sleep(5)
                                             if shot_live:
