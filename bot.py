@@ -155,6 +155,7 @@ class GameChannel:
             log_messages = []
             active_player_stats = None
             inactive_player_stats = None
+            instructions = None
             while(s_player1.hp > 0 and s_player2.hp > 0):
                 if active_player_stats and inactive_player_stats:
                     async with channel.typing():
@@ -199,17 +200,6 @@ class GameChannel:
                             else:
                                 active_player_stats = await channel.send(player2_stats)
                                 inactive_player_stats = await channel.send(player1_stats)
-                    instructions = None
-                    full_instructions = (
-                        'Turn: ' + shotgun.current_holder.name + '\n'
-                        'Click a reaction under your item to use it.\n' +
-                        ''.join('{}: {}\n'.format(items_list[i], items_description[i]) for i in range(1, len(items_list) + 1)) +
-                        'Click a reaction below to take your action\n'
-                        '🔼 - Shoot opponent\n'
-                        '🔽 - Shoot yourself (skip opponent if blank)\n'
-                        '⏭️ - Remove instructions'
-                    )
-                    short_instructions = 'Turn: ' + shotgun.current_holder.name
                     if shotgun.current_holder.aiop:
                         while(True):
                             used_item, item, effect = shotgun.current_holder.aiop.use_item()
