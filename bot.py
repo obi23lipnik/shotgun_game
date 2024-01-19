@@ -209,6 +209,13 @@ class GameChannel:
                                 await asyncio.sleep(5)
                             await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at ' + shotgun.current_opponent.name, silent=True)
                             await asyncio.sleep(3)
+                            current_damage = shotgun.dmg
+                            current_opponent = shotgun.current_opponent.name
+                            shot_live = shotgun.shoot_self()
+                            if shot_live:
+                                await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                            else:
+                                await channel.send('...click', silent=True)
                             print('shot was ' + shot_live)
                             print(s_player1.hp)
                             print(s_player2.hp)
