@@ -155,6 +155,8 @@ class GameChannel:
                     await asyncio.sleep(4)
                 slugs_message.delete()
                 shotgun.load_slugs(random_slugs)
+                active_player_stats = None
+                inactive_player_stats = None
 
                 while(len(shotgun.slugs) != 0 and s_player1.hp > 0 and s_player2.hp > 0):
                     player1_stats = get_player_stats(s_player1, shotgun)
@@ -163,8 +165,6 @@ class GameChannel:
                         active_player_stats.delete()
                     if inactive_player_stats:
                         inactive_player_stats.delete()
-                    active_player_stats = None
-                    inactive_player_stats = None
                     async with channel.typing():
                         if shotgun.current_holder == s_player1:
                             active_player_stats = await channel.send(player1_stats, silent=True)
