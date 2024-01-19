@@ -153,12 +153,14 @@ class GameChannel:
                     player1_stats = get_player_stats(s_player1, shotgun)
                     player2_stats = get_player_stats(s_player2, shotgun)
                     active_player_stats = None
-                    if shotgun.current_holder == s_player1:
-                        active_player_stats = await channel.send(player1_stats, silent=True)
-                        await channel.send(player2_stats, silent=True)
-                    else:
-                        await channel.send(player1_stats, silent=True)
-                        active_player_stats = await channel.send(player2_stats, silent=True)
+                    inactive_player_stats = None
+                    async with channel.typing():
+                        if shotgun.current_holder == s_player1:
+                            active_player_stats = await channel.send(player1_stats, silent=True)
+                            inactive_player_stats = await channel.send(player2_stats, silent=True)
+                        else:
+                            inactive_player_stats = await channel.send(player1_stats, silent=True)
+                            active_player_stats = await channel.send(player2_stats, silent=True)
                     full_instructions = (
                         'Turn: ' + shotgun.current_holder.name + '\n'
                         'Click a reaction under your item to use it.\n' +
@@ -234,8 +236,9 @@ class GameChannel:
                                 await channel.send('Wait your turn ' + player.mention, delete_after=10, silent=True)
                             else:
                                 if reaction.emoji in [kv_pair for kv_pair in b_nums.values()]:
+                                    used_item = shotgun.current_holder.inventory[nums_b[reaction.emoji]-1]
                                     success, effect = cause_effect(
-                                        shotgun.current_holder.inventory[nums_b[reaction.emoji]-1],
+                                        used_item,
                                         shotgun
                                     )
                                     if success:
@@ -246,6 +249,8 @@ class GameChannel:
                                         async with channel.typing():
                                             await active_player_stats.clear_reactions()
                                             await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
+                                            if used_item == 5:
+                                                await inactive_player_stats.edit(content=get_player_stats(shotgun.current_opponent, shotgun))
                                             new_inventory = shotgun.current_holder.get_beautiful_inv()
                                             if new_inventory:
                                                 for i in range(0, len(new_inventory)):
