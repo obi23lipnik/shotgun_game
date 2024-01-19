@@ -167,11 +167,19 @@ class GameChannel:
                     player2_stats = get_player_stats(s_player2, shotgun)
                     async with channel.typing():
                         if shotgun.current_holder == s_player1:
-                            active_player_stats = await active_player_stats.edit(content=player1_stats)
-                            inactive_player_stats = await active_player_stats.edit(content=player2_stats)
+                            if active_player_stats and inactive_player_stats:
+                                active_player_stats = await active_player_stats.edit(content=player1_stats)
+                                inactive_player_stats = await inactive_player_stats.edit(content=player2_stats)
+                            else:
+                                active_player_stats = await channel.send(player1_stats)
+                                inactive_player_stats = await channel.send(player2_stats)
                         else:
-                            inactive_player_stats = await active_player_stats.edit(content=player2_stats)
-                            active_player_stats = await active_player_stats.edit(content=player1_stats)
+                            if active_player_stats and inactive_player_stats:
+                                inactive_player_stats = await inactive_player_stats.edit(content=player2_stats)
+                                active_player_stats = await active_player_stats.edit(content=player1_stats)
+                            else:
+                                active_player_stats = await channel.send(player2_stats)
+                                inactive_player_stats = await channel.send(player1_stats)
                     instructions = None
                     full_instructions = (
                         'Turn: ' + shotgun.current_holder.name + '\n'
