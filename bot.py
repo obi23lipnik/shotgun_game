@@ -159,19 +159,19 @@ class GameChannel:
                 inactive_player_stats = None
 
                 while(len(shotgun.slugs) != 0 and s_player1.hp > 0 and s_player2.hp > 0):
+                    async with channel.typing():
+                        for i in range(0, len(log_messages)):
+                            await log_messages[i].delete()
+                            log_messages.pop(i)
                     player1_stats = get_player_stats(s_player1, shotgun)
                     player2_stats = get_player_stats(s_player2, shotgun)
-                    if active_player_stats:
-                        await active_player_stats.delete()
-                    if inactive_player_stats:
-                        await inactive_player_stats.delete()
                     async with channel.typing():
                         if shotgun.current_holder == s_player1:
-                            active_player_stats = await channel.send(player1_stats, silent=True)
-                            inactive_player_stats = await channel.send(player2_stats, silent=True)
+                            active_player_stats = await active_player_stats.edit(content=player1_stats)
+                            inactive_player_stats = await active_player_stats.edit(content=player2_stats)
                         else:
-                            inactive_player_stats = await channel.send(player1_stats, silent=True)
-                            active_player_stats = await channel.send(player2_stats, silent=True)
+                            inactive_player_stats = await active_player_stats.edit(content=player2_stats)
+                            active_player_stats = await active_player_stats.edit(content=player1_stats)
                     instructions = None
                     full_instructions = (
                         'Turn: ' + shotgun.current_holder.name + '\n'
@@ -323,13 +323,14 @@ class GameChannel:
         except asyncio.TimeoutError:
             await channel.purge()
             await self.init_game_channel()
-        winner = s_player1 if s_player1.hp > 0 else s_player2
-        loser = s_player1 if s_player1.hp <= 0 else s_player2
-        win_message = random.choice(cool_win_messages)
-        await channel.send(win_message.format(winner=winner.name, loser=loser.name), silent=True)
-        await asyncio.sleep(15)
-        await channel.purge()
-        await self.init_game_channel()
+        else:
+            winner = s_player1 if s_player1.hp > 0 else s_player2
+            loser = s_player1 if s_player1.hp <= 0 else s_player2
+            win_message = random.choice(cool_win_messages)
+            await channel.send(win_message.format(winner=winner.name, loser=loser.name), silent=True)
+            await asyncio.sleep(15)
+            await channel.purge()
+            await self.init_game_channel()
 
                         
 
