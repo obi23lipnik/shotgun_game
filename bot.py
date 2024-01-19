@@ -174,6 +174,8 @@ class GameChannel:
                     if shotgun.current_holder.aiop:
                         while(True):
                             used_item, item, effect = shotgun.current_holder.aiop.use_item()
+                            async with channel.typing():
+                                await asyncio.sleep(3)
                             print(used_item, item, effect)
                             if used_item:
                                 await channel.send(aiop_item_use_messages[item].format(shotgun.current_holder.name), silent=True, delete_after=10)
