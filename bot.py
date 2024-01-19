@@ -179,7 +179,7 @@ class GameChannel:
                             if used_item:
                                 if effect:
                                     await asyncio.sleep(1)
-                                    await channel.send(effect, silent=True, delete_after=10)
+                                    await channel.send(effect, silent=True)
                             else:
                                 break
                         shoot_self = shotgun.current_holder.aiop.should_shoot_self()
@@ -187,7 +187,9 @@ class GameChannel:
                             print('bot shoot self')
                             async with channel.typing():
                                 await asyncio.sleep(5)
-                            await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at himself...', silent=True)
+                                
+                            async with channel.typing():
+                                await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at himself...', silent=True)
                             await asyncio.sleep(3)
                             async with channel.typing():
                                 await asyncio.sleep(5)
@@ -242,17 +244,19 @@ class GameChannel:
                                     )
                                     if success:
                                         if effect:
-                                            await channel.send(effect, silent=True, delete_after=10)
+                                            await channel.send(effect, silent=True)
                                             await asyncio.sleep(5)
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
-                                        await active_player_stats.clear_reactions()
-                                        new_inventory = shotgun.current_holder.get_beautiful_inv()
-                                        if new_inventory:
-                                            active_player_stats = await channel.send(get_inventory_display(shotgun.current_holder))
-                                            for i in range(0, len(new_inventory)):
-                                                add_reaction_async(active_player_stats, b_nums[i+1])
+                                        async with channel.typing():
+                                            await active_player_stats.clear_reactions()
+                                            new_inventory = shotgun.current_holder.get_beautiful_inv()
+                                            if new_inventory:
+                                                active_player_stats = await channel.send(get_inventory_display(shotgun.current_holder))
+                                                for i in range(0, len(new_inventory)):
+                                                    await active_player_stats.add_reaction(b_nums[i+1])
                                     else:
-                                        await channel.send('Can\'t use that item right now...', delete_after=3, silent=True)
+                                        async with channel.typing():
+                                            await channel.send('Can\'t use that item right now...', delete_after=3, silent=True)
                                 else:
                                     match reaction.emoji:
                                         case '🔼':
