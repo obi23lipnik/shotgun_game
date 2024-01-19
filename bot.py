@@ -224,20 +224,21 @@ class GameChannel:
                             await asyncio.sleep(3)
                             
                     else:
-                        if shotgun.current_holder.name in skip_tutorial_users:
-                            instructions = await channel.send(short_instructions, silent=True)
-                            add_reaction_async(instructions, '🔼')
-                            add_reaction_async(instructions, '🔽')
-                            add_reaction_async(instructions, 'ℹ️')
-                        else:
-                            instructions = await channel.send(full_instructions, silent=True)
-                            add_reaction_async(instructions, '🔼')
-                            add_reaction_async(instructions, '🔽')
-                            add_reaction_async(instructions, '⏭️')
-                        b_inventory = shotgun.current_holder.get_beautiful_inv()
-                        for i in range(0, len(b_inventory)):
-                            add_reaction_async(active_player_stats, b_nums[i+1])
-                        break_reactions_loop = False
+                        if not instructions:
+                            if shotgun.current_holder.name in skip_tutorial_users:
+                                instructions = await channel.send(short_instructions, silent=True)
+                                add_reaction_async(instructions, '🔼')
+                                add_reaction_async(instructions, '🔽')
+                                add_reaction_async(instructions, 'ℹ️')
+                            else:
+                                instructions = await channel.send(full_instructions, silent=True)
+                                add_reaction_async(instructions, '🔼')
+                                add_reaction_async(instructions, '🔽')
+                                add_reaction_async(instructions, '⏭️')
+                            b_inventory = shotgun.current_holder.get_beautiful_inv()
+                            for i in range(0, len(b_inventory)):
+                                add_reaction_async(active_player_stats, b_nums[i+1])
+                            break_reactions_loop = False
                         while(not break_reactions_loop):
                             reaction, player = await self.client.wait_for('reaction_add', check=check, timeout=600)
                             if player.id == client.user.id:
@@ -277,13 +278,13 @@ class GameChannel:
                                             shot_live = shotgun.shoot_opponent()
                                             
                                             async with channel.typing():
-                                                await channel.send(current_holder + ' aims the barell of the shotgun at ' + current_opponent, silent=True)
+                                                log_messages.append(await channel.send(current_holder + ' aims the barell of the shotgun at ' + current_opponent, silent=True))
                                             async with channel.typing():
                                                 await asyncio.sleep(3.0 + (3 * random.random()))
                                                 if shot_live:
-                                                    await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                                                    log_messages.append(await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True))
                                                 else:
-                                                    await channel.send('...click', silent=True)
+                                                    log_messages.append(await channel.send('...click', silent=True))
                                             await asyncio.sleep(3)
                                             break
                                         case '🔽':
@@ -291,13 +292,13 @@ class GameChannel:
                                             current_holder = shotgun.current_holder.name
                                             shot_live = shotgun.shoot_self()
                                             async with channel.typing():
-                                                await channel.send(current_holder + ' aims the barell of the shotgun at themself', silent=True)
+                                                log_messages.append(await channel.send(current_holder + ' aims the barell of the shotgun at themself', silent=True))
                                             async with channel.typing():
                                                 await asyncio.sleep(3.0 + (3 * random.random()))
                                                 if shot_live:
-                                                    await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                                                    log_messages.append(await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True))
                                                 else:
-                                                    await channel.send('...click', silent=True)
+                                                    log_messages.append(await channel.send('...click', silent=True))
                                             await asyncio.sleep(3)
                                             break
                                         case '⏭️':
