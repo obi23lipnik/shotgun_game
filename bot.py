@@ -4,7 +4,7 @@ import random
 import discord
 from discord_token import TOKEN
 from AIOpponent import AiOp
-from Player import Player
+from Player import Player, get_hp_display, get_inventory_display
 from Shotgun import Shotgun, beautify_slugs, cause_effect, get_random_slugs
 from constants import b_nums, nums_b, cool_win_messages, items_list, items_description, aiop_item_use_messages
 
@@ -19,9 +19,6 @@ def get_everyone_role(server_roles):
     for role in server_roles:
         if role.name == '@everyone':
             return role
-
-def get_hp_display(player):
-    return ' '.join('❤️' for _ in range(player.hp)) + ' '.join('🖤' for _ in range(player.max_hp - player.hp))
 
 def get_player_stats(player, shotgun):
     return (
@@ -178,10 +175,9 @@ class GameChannel:
                                 await asyncio.sleep(3)
                             print(used_item, item, effect)
                             if used_item:
-                                await channel.send(aiop_item_use_messages[item].format(shotgun.current_holder.name), silent=True, delete_after=10)
                                 if effect:
                                     await asyncio.sleep(1)
-                                    await channel.send(effect)
+                                    await channel.send(effect, silent=True, delete_after=10)
                             else:
                                 break
                         shoot_self = shotgun.current_holder.aiop.should_shoot_self()
@@ -244,21 +240,24 @@ class GameChannel:
                                     )
                                     if success:
                                         if effect:
-                                            await channel.send(effect, silent=True)
+                                            await channel.send(effect, silent=True, delete_after=10)
                                             await asyncio.sleep(5)
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
-                                        break_reactions_loop = True
-                                        break
+                                        await active_player_stats.clear_reactions()
+                                        active_player_stats = await channel.send(get_inventory_display(shotgun.current_holder))
+                                        for i in range(0, len(shotgun.current_holder.get_beautiful_inv())):
+                                            add_reaction_async(active_player_stats, b_nums[i+1])
                                     else:
                                         await channel.send('Can\'t use that item right now...', delete_after=3, silent=True)
                                 else:
                                     match reaction.emoji:
                                         case '🔼':
-                                            async with channel.typing():
-                                                await asyncio.sleep(5)
                                             current_damage = shotgun.dmg
                                             current_opponent = shotgun.current_opponent.name
                                             shot_live = shotgun.shoot_opponent()
+                                            await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at ' + shotgun.current_opponent.name, silent=True)
+                                            async with channel.typing():
+                                                await asyncio.sleep(5)
                                             if shot_live:
                                                 await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
                                             else:
@@ -266,11 +265,12 @@ class GameChannel:
                                             await asyncio.sleep(3)
                                             break
                                         case '🔽':
-                                            async with channel.typing():
-                                                await asyncio.sleep(5)
                                             current_damage = shotgun.dmg
                                             current_holder = shotgun.current_holder.name
                                             shot_live = shotgun.shoot_self()
+                                            await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at themself', silent=True)
+                                            async with channel.typing():
+                                                await asyncio.sleep(5)
                                             if shot_live:
                                                 await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
                                             else:
@@ -294,7 +294,7 @@ class GameChannel:
         loser = s_player1 if s_player1.hp <= 0 else s_player2
         win_message = random.choice(cool_win_messages)
         await channel.send(win_message.format(winner=winner.name, loser=loser.name), silent=True)
-        await asyncio.sleep(10)
+        await asyncio.sleep(15)
         await channel.purge()
         await self.init_game_channel()
 

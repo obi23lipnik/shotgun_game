@@ -1,37 +1,38 @@
 import random
 
 from constants import b_slugs
+from Player import get_hp_display
 
 
 def cause_effect(itemNumber, shotgun):
     match itemNumber:
         case 1:  # cigarrette
             shotgun.current_holder.change_hp(1)
+            return True, shotgun.current_holder.name + ' healed for 1 by smoking🚬, current health: ' + get_hp_display(shotgun.current_holder)
         case 2:  # axe
             if shotgun.dmg == 1:
                 shotgun.increase_dmg()
-                return True, None
+                return True, shotgun.current_holder.name + ' grabs his axe🪓 and sharpens the end of the shotgun. +1dmg'
             else:
                 return False, None
         case 3:  # beer
-            return True, shotgun.current_holder.name + ' empties the chamber, the slug was: ' + (b_slugs[0] if not shotgun.unload_slug() else b_slugs[1])
+            return True, shotgun.current_holder.name + ' empties the chamber after downing a beer🍺, the slug was: ' + (b_slugs[0] if not shotgun.unload_slug() else b_slugs[1])
         case 4:  # lens
             shotgun.aiop.knows_next = True
-            return True, shotgun.current_holder.name + ' checks the chamber, the next slug is: ' + (b_slugs[0] if not shotgun.slugs[0] else b_slugs[1])
+            return True, shotgun.current_holder.name + ' checks the chamber with a lens🔎, the next slug is: ' + (b_slugs[0] if not shotgun.slugs[0] else b_slugs[1])
         case 5:  # cuffs
             if not shotgun.current_opponent.handcuffed_this_round and not shotgun.current_opponent.handcuffed:
                 shotgun.current_opponent.handcuffed = True
-                return True, None
+                return True, shotgun.current_holder.name + ' chains🔗 ' + shotgun.current_opponent.name + ' to the ground, preventing their next turn.'
             return False, None
         case 6:
             temp_bullets = shotgun.slugs[:]
             new_bullets = [temp_bullets[0]] + [1] + temp_bullets[1:]
             shotgun.slugs = new_bullets
             shotgun.aiop.knows_second = True
-            return True, None
+            return True, shotgun.current_holder.name + ' puts an extra live slug🟥 after the next one.'
         case _:
             return False, None
-    return True, None
 
 def get_random_slugs(maxSlugs=8):
     live_slugs = random.randint(1, int(maxSlugs/2))

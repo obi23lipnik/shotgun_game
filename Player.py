@@ -6,6 +6,12 @@ def get_random_item():
     item_index = random.randint(1, len(items_list.items()))
     return item_index
 
+def get_hp_display(player):
+    return ' '.join('❤️' for _ in range(player.hp)) + ''.join(' 🖤' for _ in range(player.max_hp - player.hp))
+
+def get_inventory_display(player):
+    return ''.join('[  {}  ]'.format(b_item) for b_item in player.get_beautiful_inv())
+
 class Player:
     name = None
     hp = None
