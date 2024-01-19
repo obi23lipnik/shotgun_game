@@ -184,11 +184,11 @@ class GameChannel:
                                 break
                         shoot_self = shotgun.current_holder.aiop.should_shoot_self()
                         if shoot_self:
+                            print('bot shoot self')
                             async with channel.typing():
                                 await asyncio.sleep(5)
                             await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at himself...', silent=True)
                             await asyncio.sleep(3)
-                            await channel.purge()
                             async with channel.typing():
                                 await asyncio.sleep(5)
                             current_damage = shotgun.dmg
@@ -198,13 +198,20 @@ class GameChannel:
                                 await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
                             else:
                                 await channel.send('...click', silent=True)
+                            print('shot was ' + shot_live)
+                            print(s_player1.hp)
+                            print(s_player2.hp)
                             await asyncio.sleep(3)
                             break
                         else:
+                            print('bot shoot you')
                             async with channel.typing():
                                 await asyncio.sleep(5)
                             await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at ' + shotgun.current_opponent.name, silent=True)
                             await asyncio.sleep(3)
+                            print('shot was ' + shot_live)
+                            print(s_player1.hp)
+                            print(s_player2.hp)
                             
                     else:
                         if shotgun.current_holder.name in skip_tutorial_users:
