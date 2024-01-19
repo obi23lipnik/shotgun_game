@@ -172,6 +172,7 @@ class GameChannel:
                         else:
                             inactive_player_stats = await channel.send(player1_stats, silent=True)
                             active_player_stats = await channel.send(player2_stats, silent=True)
+                    instructions = None
                     full_instructions = (
                         'Turn: ' + shotgun.current_holder.name + '\n'
                         'Click a reaction under your item to use it.\n' +
