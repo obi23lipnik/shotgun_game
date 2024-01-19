@@ -198,7 +198,6 @@ class GameChannel:
                                 await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
                             else:
                                 await channel.send('...click', silent=True)
-                            print('shot was ' + shot_live)
                         else:
                             print('bot shoot you')
                             async with channel.typing():
