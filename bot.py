@@ -195,8 +195,8 @@ class GameChannel:
                                 inactive_player_stats = await channel.send(player2_stats)
                         else:
                             if active_player_stats and inactive_player_stats:
-                                active_player_stats = await active_player_stats.edit(content=player1_stats)
-                                inactive_player_stats = await inactive_player_stats.edit(content=player2_stats)
+                                inactive_player_stats = await inactive_player_stats.edit(content=player1_stats)
+                                active_player_stats = await active_player_stats.edit(content=player2_stats)
                             else:
                                 inactive_player_stats = await channel.send(player1_stats)
                                 active_player_stats = await channel.send(player2_stats)
