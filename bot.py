@@ -199,9 +199,6 @@ class GameChannel:
                             else:
                                 await channel.send('...click', silent=True)
                             print('shot was ' + shot_live)
-                            print(s_player1.hp)
-                            print(s_player2.hp)
-                            await asyncio.sleep(3)
                             break
                         else:
                             print('bot shoot you')
@@ -216,9 +213,8 @@ class GameChannel:
                                 await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
                             else:
                                 await channel.send('...click', silent=True)
-                            print('shot was ' + shot_live)
-                            print(s_player1.hp)
-                            print(s_player2.hp)
+                            await asyncio.sleep(3)
+                            break
                             
                     else:
                         if shotgun.current_holder.name in skip_tutorial_users:
