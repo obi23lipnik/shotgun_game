@@ -18,7 +18,8 @@ def cause_effect(itemNumber, shotgun):
         case 3:  # beer
             return True, shotgun.current_holder.name + ' empties the chamber after downing a beer🍺, the slug was: ' + (b_slugs[0] if not shotgun.unload_slug() else b_slugs[1])
         case 4:  # lens
-            shotgun.aiop.knows_next = True
+            if shotgun.aiop:
+                shotgun.aiop.knows_next = True
             return True, shotgun.current_holder.name + ' checks the chamber with a lens🔎, the next slug is: ' + (b_slugs[0] if not shotgun.slugs[0] else b_slugs[1])
         case 5:  # cuffs
             if not shotgun.current_opponent.handcuffed_this_round and not shotgun.current_opponent.handcuffed:
@@ -29,7 +30,8 @@ def cause_effect(itemNumber, shotgun):
             temp_bullets = shotgun.slugs[:]
             new_bullets = [temp_bullets[0]] + [1] + temp_bullets[1:]
             shotgun.slugs = new_bullets
-            shotgun.aiop.knows_second = True
+            if shotgun.aiop:
+                shotgun.aiop.knows_second = True
             return True, shotgun.current_holder.name + ' puts an extra live slug🟥 after the next one.'
         case _:
             return False, None
