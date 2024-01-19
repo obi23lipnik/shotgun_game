@@ -153,7 +153,15 @@ class GameChannel:
         await channel.purge()
         try:
             log_messages = []
+            active_player_stats = None
+            inactive_player_stats = None
             while(s_player1.hp > 0 and s_player2.hp > 0):
+                if active_player_stats and inactive_player_stats:
+                    async with channel.typing():
+                        await active_player_stats.delete()
+                        await inactive_player_stats.delete()
+                    active_player_stats = None
+                    inactive_player_stats = None
                 for _ in range(0, random.randint(1, 3)):
                     s_player1.add_item_to_inventory()
                     s_player2.add_item_to_inventory()
@@ -168,8 +176,6 @@ class GameChannel:
                     await asyncio.sleep(4)
                 await slugs_message.delete()
                 shotgun.load_slugs(random_slugs)
-                active_player_stats = None
-                inactive_player_stats = None
 
                 while(len(shotgun.slugs) != 0 and s_player1.hp > 0 and s_player2.hp > 0):
                     async with channel.typing():
