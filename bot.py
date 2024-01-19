@@ -173,46 +173,41 @@ class GameChannel:
                     if shotgun.current_holder.aiop:
                         while(True):
                             used_item, item, effect = shotgun.current_holder.aiop.use_item()
-                            async with channel.typing():
-                                await asyncio.sleep(3)
                             print(used_item, item, effect)
                             if used_item:
                                 if effect:
-                                    await asyncio.sleep(1)
-                                    await channel.send(effect, silent=True)
+                                    async with channel.typing():
+                                        await channel.send(effect, silent=True)
                             else:
                                 break
                         shoot_self = shotgun.current_holder.aiop.should_shoot_self()
                         if shoot_self:
-                            print('bot shoot self')
-                            async with channel.typing():
-                                await asyncio.sleep(5)
-                                
+                            print('bot shoot self')                                
                             async with channel.typing():
                                 await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at himself...', silent=True)
-                            await asyncio.sleep(3)
                             async with channel.typing():
-                                await asyncio.sleep(5)
-                            current_damage = shotgun.dmg
-                            current_holder = shotgun.current_holder.name
-                            shot_live = shotgun.shoot_self()
-                            if shot_live:
-                                await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
-                            else:
-                                await channel.send('...click', silent=True)
+                                await asyncio.sleep(3.0 + (3 * random.random()))
+                                current_damage = shotgun.dmg
+                                current_holder = shotgun.current_holder.name
+                                shot_live = shotgun.shoot_self()
+                                if shot_live:
+                                    await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                                else:
+                                    await channel.send('...click', silent=True)
+                            await asyncio.sleep(3)
                         else:
                             print('bot shoot you')
                             async with channel.typing():
-                                await asyncio.sleep(5)
-                            await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at ' + shotgun.current_opponent.name, silent=True)
-                            await asyncio.sleep(3)
-                            current_damage = shotgun.dmg
-                            current_opponent = shotgun.current_opponent.name
-                            shot_live = shotgun.shoot_opponent()
-                            if shot_live:
-                                await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
-                            else:
-                                await channel.send('...click', silent=True)
+                                await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at ' + shotgun.current_opponent.name, silent=True)
+                            async with channel.typing():
+                                await asyncio.sleep(3.0 + (3 * random.random()))
+                                current_damage = shotgun.dmg
+                                current_opponent = shotgun.current_opponent.name
+                                shot_live = shotgun.shoot_opponent()
+                                if shot_live:
+                                    await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                                else:
+                                    await channel.send('...click', silent=True)
                             await asyncio.sleep(3)
                             
                     else:
@@ -243,9 +238,9 @@ class GameChannel:
                                         shotgun
                                     )
                                     if success:
-                                        if effect:
-                                            await channel.send(effect, silent=True)
-                                            await asyncio.sleep(5)
+                                        async with channel.typing():
+                                            if effect:
+                                                await channel.send(effect, silent=True)
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
                                         async with channel.typing():
                                             await active_player_stats.clear_reactions()
@@ -264,26 +259,29 @@ class GameChannel:
                                             current_holder = shotgun.current_holder.name
                                             current_opponent = shotgun.current_opponent.name
                                             shot_live = shotgun.shoot_opponent()
-                                            await channel.send(current_holder + ' aims the barell of the shotgun at ' + current_opponent, silent=True)
+                                            
                                             async with channel.typing():
-                                                await asyncio.sleep(5)
-                                            if shot_live:
-                                                await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
-                                            else:
-                                                await channel.send('...click', silent=True)
+                                                await channel.send(current_holder + ' aims the barell of the shotgun at ' + current_opponent, silent=True)
+                                            async with channel.typing():
+                                                await asyncio.sleep(3.0 + (3 * random.random()))
+                                                if shot_live:
+                                                    await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                                                else:
+                                                    await channel.send('...click', silent=True)
                                             await asyncio.sleep(3)
                                             break
                                         case '🔽':
                                             current_damage = shotgun.dmg
                                             current_holder = shotgun.current_holder.name
                                             shot_live = shotgun.shoot_self()
-                                            await channel.send(current_holder + ' aims the barell of the shotgun at themself', silent=True)
                                             async with channel.typing():
-                                                await asyncio.sleep(5)
-                                            if shot_live:
-                                                await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
-                                            else:
-                                                await channel.send('...click', silent=True)
+                                                await channel.send(current_holder + ' aims the barell of the shotgun at themself', silent=True)
+                                            async with channel.typing():
+                                                await asyncio.sleep(3.0 + (3 * random.random()))
+                                                if shot_live:
+                                                    await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                                                else:
+                                                    await channel.send('...click', silent=True)
                                             await asyncio.sleep(3)
                                             break
                                         case '⏭️':
