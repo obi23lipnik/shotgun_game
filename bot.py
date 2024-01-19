@@ -282,9 +282,14 @@ class GameChannel:
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
                                         async with channel.typing():
                                             await active_player_stats.clear_reactions()
-                                            await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
-                                            if used_item == 5:
-                                                await inactive_player_stats.edit(content=get_player_stats(shotgun.current_opponent, shotgun))
+                                            if shotgun.current_holder == player1:
+                                                await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
+                                                if used_item == 5:
+                                                    await inactive_player_stats.edit(content=get_player_stats(shotgun.current_opponent, shotgun))
+                                            else:
+                                                if used_item == 5:
+                                                    await inactive_player_stats.edit(content=get_player_stats(shotgun.current_opponent, shotgun))
+                                                await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
                                             new_inventory = shotgun.current_holder.get_beautiful_inv()
                                             if new_inventory:
                                                 for i in range(0, len(new_inventory)):
