@@ -139,19 +139,30 @@ class GameChannel:
             shotgun = Shotgun(s_player1, s_player2)
         await channel.purge()
         try:
+            log_messages = []
             while(s_player1.hp > 0 and s_player2.hp > 0):
-                random_slugs = get_random_slugs()
-                await channel.send('Slugs: ' + beautify_slugs(random_slugs), delete_after=5, silent=True)
-                await asyncio.sleep(4)
-                shotgun.load_slugs(random_slugs)
                 for _ in range(0, random.randint(1, 3)):
                     s_player1.add_item_to_inventory()
                     s_player2.add_item_to_inventory()
+                async with channel.typing():
+                    for i in range(0, len(log_messages)):
+                        log_messages[i].delete()
+                        log_messages.pop(i)
+                random_slugs = get_random_slugs()
+                
+                async with channel.typing():
+                    slugs_message = await channel.send('Slugs: ' + beautify_slugs(random_slugs), delete_after=5, silent=True)
+                    await asyncio.sleep(4)
+                slugs_message.delete()
+                shotgun.load_slugs(random_slugs)
 
                 while(len(shotgun.slugs) != 0 and s_player1.hp > 0 and s_player2.hp > 0):
-                    await channel.purge()
                     player1_stats = get_player_stats(s_player1, shotgun)
                     player2_stats = get_player_stats(s_player2, shotgun)
+                    if active_player_stats:
+                        active_player_stats.delete()
+                    if inactive_player_stats:
+                        inactive_player_stats.delete()
                     active_player_stats = None
                     inactive_player_stats = None
                     async with channel.typing():
@@ -171,7 +182,6 @@ class GameChannel:
                         '⏭️ - Remove instructions'
                     )
                     short_instructions = 'Turn: ' + shotgun.current_holder.name
-                    message = None
                     if shotgun.current_holder.aiop:
                         while(True):
                             used_item, item, effect = shotgun.current_holder.aiop.use_item()
@@ -180,7 +190,7 @@ class GameChannel:
                                 if effect:
                                     async with channel.typing():
                                         await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
-                                        await channel.send(effect, silent=True)
+                                        log_messages.append(await channel.send(effect, silent=True))
                             else:
                                 break
                         shoot_self = shotgun.current_holder.aiop.should_shoot_self()
@@ -215,15 +225,15 @@ class GameChannel:
                             
                     else:
                         if shotgun.current_holder.name in skip_tutorial_users:
-                            message = await channel.send(short_instructions, silent=True)
-                            add_reaction_async(message, '🔼')
-                            add_reaction_async(message, '🔽')
-                            add_reaction_async(message, 'ℹ️')
+                            instructions = await channel.send(short_instructions, silent=True)
+                            add_reaction_async(instructions, '🔼')
+                            add_reaction_async(instructions, '🔽')
+                            add_reaction_async(instructions, 'ℹ️')
                         else:
-                            message = await channel.send(full_instructions, silent=True)
-                            add_reaction_async(message, '🔼')
-                            add_reaction_async(message, '🔽')
-                            add_reaction_async(message, '⏭️')
+                            instructions = await channel.send(full_instructions, silent=True)
+                            add_reaction_async(instructions, '🔼')
+                            add_reaction_async(instructions, '🔽')
+                            add_reaction_async(instructions, '⏭️')
                         b_inventory = shotgun.current_holder.get_beautiful_inv()
                         for i in range(0, len(b_inventory)):
                             add_reaction_async(active_player_stats, b_nums[i+1])
@@ -244,7 +254,7 @@ class GameChannel:
                                     if success:
                                         async with channel.typing():
                                             if effect:
-                                                await channel.send(effect, silent=True)
+                                                log_messages.append(await channel.send(effect, silent=True))
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
                                         async with channel.typing():
                                             await active_player_stats.clear_reactions()
@@ -254,7 +264,7 @@ class GameChannel:
                                             new_inventory = shotgun.current_holder.get_beautiful_inv()
                                             if new_inventory:
                                                 for i in range(0, len(new_inventory)):
-                                                    await active_player_stats.add_reaction(b_nums[i+1])
+                                                    add_reaction_async(active_player_stats, b_nums[i+1])
                                     else:
                                         async with channel.typing():
                                             await channel.send('Can\'t use that item right now...', delete_after=3, silent=True)
@@ -292,11 +302,19 @@ class GameChannel:
                                             break
                                         case '⏭️':
                                             skip_tutorial_users.append(shotgun.current_holder.name)
-                                            await channel.purge()
+                                            await instructions.edit(short_instructions)
+                                            await instructions.clear_reactions()
+                                            add_reaction_async(instructions, '🔼')
+                                            add_reaction_async(instructions, '🔽')
+                                            add_reaction_async(instructions, 'ℹ️')
                                             break
                                         case 'ℹ️':
                                             skip_tutorial_users.pop(skip_tutorial_users.index(shotgun.current_holder.name))
-                                            await channel.purge()
+                                            await instructions.edit(full_instructions)
+                                            await instructions.clear_reactions()
+                                            add_reaction_async(instructions, '🔼')
+                                            add_reaction_async(instructions, '🔽')
+                                            add_reaction_async(instructions, '⏭️')
                                             break
                                         case _:
                                             continue
