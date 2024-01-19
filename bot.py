@@ -252,8 +252,6 @@ class GameChannel:
                                 else:
                                     match reaction.emoji:
                                         case '🔼':
-                                            await asyncio.sleep(1)
-                                            await channel.purge()
                                             async with channel.typing():
                                                 await asyncio.sleep(5)
                                             current_damage = shotgun.dmg
@@ -266,8 +264,6 @@ class GameChannel:
                                             await asyncio.sleep(3)
                                             break
                                         case '🔽':
-                                            await asyncio.sleep(1)
-                                            await channel.purge()
                                             async with channel.typing():
                                                 await asyncio.sleep(5)
                                             current_damage = shotgun.dmg
