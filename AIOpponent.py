@@ -36,11 +36,11 @@ class AiOp:
         if 5 in items and not (self.opponent_obj.handcuffed or self.opponent_obj.handcuffed_this_round):
             cause_effect(5, self.shotgun)
             self.player_obj.inventory.pop(items.find(5))
-            return True, 5
+            return True, 5, None
         if 6 in items and self.knows_next and self.shotgun.slugs[0] == 0 and not self.knows_second:
             cause_effect(6, self.shotgun)
             self.player_obj.inventory.pop(items.find(6))
-            return True, 6
+            return True, 6, None
         if 4 in items and not (self.knows_next or (self.live_percentage == 1.0 or self.live_percentage == 0.0)):
             _, effect = cause_effect(4, self.shotgun)
             self.player_obj.inventory.pop(items.find(4))
@@ -66,11 +66,12 @@ class AiOp:
                 if self.shotgun.slugs[0] == 1:
                     cause_effect(2, self.shotgun)
                     self.player_obj.inventory.pop(items.find(2))
-                    return True, 2
+                    return True, 2, None
             elif self.live_percentage > 0.67:
                 cause_effect(2, self.shotgun)
                 self.player_obj.inventory.pop(items.find(2))
-                return True, 2
+                return True, 2, None
+        return False, None, None
 
     def should_shoot_self(self):
         if self.knows_next:
