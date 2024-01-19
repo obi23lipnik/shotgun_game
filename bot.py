@@ -326,18 +326,12 @@ class GameChannel:
                                         case '⏭️':
                                             skip_tutorial_users.append(shotgun.current_holder.name)
                                             await instructions.delete()
-                                            instructions = await channel.send(get_instructions(shotgun, False), silent=True)
-                                            add_reaction_async(instructions, '🔼')
-                                            add_reaction_async(instructions, '🔽')
-                                            add_reaction_async(instructions, 'ℹ️')
+                                            instructions = None
                                             break
                                         case 'ℹ️':
                                             skip_tutorial_users.pop(skip_tutorial_users.index(shotgun.current_holder.name))
                                             await instructions.delete()
-                                            instructions = await channel.send(get_instructions(shotgun, True), silent=True)
-                                            add_reaction_async(instructions, '🔼')
-                                            add_reaction_async(instructions, '🔽')
-                                            add_reaction_async(instructions, '⏭️')
+                                            instructions = None
                                             break
                                         case _:
                                             continue
