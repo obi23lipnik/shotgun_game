@@ -14,8 +14,9 @@ class Player:
     handcuffed = False
     handcuffed_this_round = False
     inventory = []
+    aiop = None
 
-    def __init__(self, name=None, hp=None, inventory=None):
+    def __init__(self, name=None, hp=None, inventory=None, aiop=None):
         if hp:
             self.hp = hp
         else: 
@@ -27,7 +28,8 @@ class Player:
             self.inventory = []
         self.name = name
         self.max_hp = self.hp
-
+        self.aiop = aiop
+ 
     def get_beautiful_inv(self):
         return [b_items[item_number] for item_number in self.inventory]
 

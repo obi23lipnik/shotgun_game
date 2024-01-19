@@ -52,6 +52,15 @@ nums_b = {
     '8️⃣': 8,
 }
 
+aiop_item_use_messages = {
+    1: '{} smokes a nice ciggarette🚬. +1hp',
+    2: '{} grabs his axe🪓 and sharpens the end of the shotgun. +1dmg',
+    3: '{} downs a beer🍺 and unloads the next slug.',
+    4: '{} grabs a magnifying glass🔎 and checks the next slug.',
+    5: '{} chains🔗 you to the ground, you can\'t move for one round.',
+    6: '{} puts an extra live slug🟥 after the next one.',
+}
+
 cool_win_messages = (
     '{winner} shot {loser} with a shotgun. And kept shooting him until he was dead...'
     '\n{winner} is clearly a real winner, folks.',

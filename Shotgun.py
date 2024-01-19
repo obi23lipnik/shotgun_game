@@ -14,24 +14,20 @@ def cause_effect(itemNumber, shotgun):
             else:
                 return False, None
         case 3:  # beer
-            return True, 'You empty the chamber, the slug was: ' + (b_slugs[0] if not shotgun.unload_slug() else b_slugs[1])
+            return True, shotgun.current_holder.name + ' empties the chamber, the slug was: ' + (b_slugs[0] if not shotgun.unload_slug() else b_slugs[1])
         case 4:  # lens
-            return True, 'You check the chamber, the next slug is: ' + (b_slugs[0] if not shotgun.slugs[0] else b_slugs[1])
+            shotgun.self.aiop.knows_next = True
+            return True, shotgun.current_holder.name + ' checks the chamber, the next slug is: ' + (b_slugs[0] if not shotgun.slugs[0] else b_slugs[1])
         case 5:  # cuffs
             if not shotgun.current_opponent.handcuffed_this_round and not shotgun.current_opponent.handcuffed:
                 shotgun.current_opponent.handcuffed = True
                 return True, None
             return False, None
         case 6:
-            temp_bullets = []
-            for bullet in shotgun.slugs:
-                temp_bullets.append(bullet)
-            temp_bullets.append(temp_bullets[-1])
-            temp_bullets[-2] = 1
-            new_bullets = []
-            for bullet in temp_bullets:
-                new_bullets.append(bullet)
+            temp_bullets = shotgun.slugs[:]
+            new_bullets = [temp_bullets[0]] + [1] + temp_bullets[1:]
             shotgun.slugs = new_bullets
+            shotgun.self.aiop.knows_second = True
             return True, None
         case _:
             return False, None
@@ -55,6 +51,7 @@ class Shotgun:
     handcuffed_this_round = False
     dmg = 1
     slugs = []
+    aiop = None
 
     def __init__(self, player1, player2, holder=None, opponent=None):
         players = [player1, player2]
@@ -73,6 +70,7 @@ class Shotgun:
         self.dmg = 2
 
     def load_slugs(self, slugs=get_random_slugs()):
+        self.aiop.load_data()
         random.shuffle(slugs)
         self.slugs = slugs
     
@@ -82,6 +80,8 @@ class Shotgun:
             self.slugs = []
         else:
             self.slugs = self.slugs[1:]
+        self.aiop.cycle_bullet()
+        self.aiop.load_data()
         return slug
     
     def switch_holder(self):
@@ -93,7 +93,6 @@ class Shotgun:
         temp_opponent = self.current_holder
         self.current_holder = self.current_opponent
         self.current_opponent = temp_opponent
-
 
     def shoot_self(self):
         used_slug = self.slugs[0]
