@@ -125,6 +125,7 @@ class GameChannel:
             return reaction.message.channel.id == self.channel_id
         s_player1 = None
         s_player2 = None
+        shotgun = None
         if play_ai:
             s_player1 = Player(name=player1.mention)
             s_player2 = Player(name='Strange man', hp=s_player1.hp)
@@ -135,6 +136,7 @@ class GameChannel:
         else:
             s_player1 = Player(name=player1.mention)
             s_player2 = Player(name=player2.mention, hp=s_player1.hp)
+            shotgun = Shotgun(s_player1, s_player2)
         await channel.purge()
         try:
             while(s_player1.hp > 0 and s_player2.hp > 0):
