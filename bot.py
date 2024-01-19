@@ -195,12 +195,15 @@ class GameChannel:
                                 inactive_player_stats = await channel.send(player2_stats)
                         else:
                             if active_player_stats and inactive_player_stats:
-                                inactive_player_stats = await inactive_player_stats.edit(content=player2_stats)
                                 active_player_stats = await active_player_stats.edit(content=player1_stats)
+                                inactive_player_stats = await inactive_player_stats.edit(content=player2_stats)
                             else:
-                                active_player_stats = await channel.send(player2_stats)
                                 inactive_player_stats = await channel.send(player1_stats)
+                                active_player_stats = await channel.send(player2_stats)
                     if shotgun.current_holder.aiop:
+                        if instructions:
+                            await instructions.delete()
+                            instructions = None
                         while(True):
                             used_item, item, effect = shotgun.current_holder.aiop.use_item()
                             print(used_item, item, effect)
