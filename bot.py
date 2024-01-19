@@ -147,7 +147,7 @@ class GameChannel:
                 async with channel.typing():
                     for i in range(0, len(log_messages)):
                         await log_messages[i].delete()
-                        log_messages.pop(i)
+                    log_messages = []
                 random_slugs = get_random_slugs()
                 
                 async with channel.typing():
@@ -162,7 +162,7 @@ class GameChannel:
                     async with channel.typing():
                         for i in range(0, len(log_messages)):
                             await log_messages[i].delete()
-                            log_messages.pop(i)
+                        log_messages = []
                     player1_stats = get_player_stats(s_player1, shotgun)
                     player2_stats = get_player_stats(s_player2, shotgun)
                     async with channel.typing():
