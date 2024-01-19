@@ -27,7 +27,7 @@ def cause_effect(itemNumber, shotgun):
             temp_bullets = shotgun.slugs[:]
             new_bullets = [temp_bullets[0]] + [1] + temp_bullets[1:]
             shotgun.slugs = new_bullets
-            shotgun.self.aiop.knows_second = True
+            shotgun.aiop.knows_second = True
             return True, None
         case _:
             return False, None
