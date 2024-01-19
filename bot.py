@@ -252,8 +252,9 @@ class GameChannel:
                             await asyncio.sleep(3)
                             
                     else:
-                        await instructions.delete()
-                        instructions = None
+                        if instructions:
+                            await instructions.delete()
+                            instructions = None
                         if shotgun.current_holder.name in skip_tutorial_users:
                             instructions = await channel.send(get_instructions(shotgun, False), silent=True)
                             add_reaction_async(instructions, '🔼')
