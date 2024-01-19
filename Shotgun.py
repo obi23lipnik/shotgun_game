@@ -70,9 +70,9 @@ class Shotgun:
         self.dmg = 2
 
     def load_slugs(self, slugs=get_random_slugs()):
-        self.aiop.load_data()
         random.shuffle(slugs)
         self.slugs = slugs
+        self.aiop.load_data()
     
     def unload_slug(self):
         slug = self.slugs[0]
