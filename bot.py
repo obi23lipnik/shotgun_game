@@ -197,30 +197,30 @@ class GameChannel:
                         if shoot_self:
                             print('bot shoot self')                                
                             async with channel.typing():
-                                await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at himself...', silent=True)
+                                log_messages.append(await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at himself...', silent=True))
                             async with channel.typing():
                                 await asyncio.sleep(3.0 + (3 * random.random()))
                                 current_damage = shotgun.dmg
                                 current_holder = shotgun.current_holder.name
                                 shot_live = shotgun.shoot_self()
                                 if shot_live:
-                                    await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                                    log_messages.append(await channel.send('BOOM! ' + current_holder + ' -' + '{}'.format(current_damage) + 'hp', silent=True))
                                 else:
-                                    await channel.send('...click', silent=True)
+                                    log_messages.append(await channel.send('...click', silent=True))
                             await asyncio.sleep(3)
                         else:
                             print('bot shoot you')
                             async with channel.typing():
-                                await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at ' + shotgun.current_opponent.name, silent=True)
+                                log_messages.append(await channel.send(shotgun.current_holder.name + ' aims the barell of the shotgun at ' + shotgun.current_opponent.name, silent=True))
                             async with channel.typing():
                                 await asyncio.sleep(3.0 + (3 * random.random()))
                                 current_damage = shotgun.dmg
                                 current_opponent = shotgun.current_opponent.name
                                 shot_live = shotgun.shoot_opponent()
                                 if shot_live:
-                                    await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True)
+                                    log_messages.append(await channel.send('BOOM! ' + current_opponent + ' -' + '{}'.format(current_damage) + 'hp', silent=True))
                                 else:
-                                    await channel.send('...click', silent=True)
+                                    log_messages.append(await channel.send('...click', silent=True))
                             await asyncio.sleep(3)
                             
                     else:
@@ -302,7 +302,7 @@ class GameChannel:
                                             break
                                         case '⏭️':
                                             skip_tutorial_users.append(shotgun.current_holder.name)
-                                            await instructions.edit(short_instructions)
+                                            await instructions.edit(content=short_instructions)
                                             await instructions.clear_reactions()
                                             add_reaction_async(instructions, '🔼')
                                             add_reaction_async(instructions, '🔽')
@@ -310,7 +310,7 @@ class GameChannel:
                                             break
                                         case 'ℹ️':
                                             skip_tutorial_users.pop(skip_tutorial_users.index(shotgun.current_holder.name))
-                                            await instructions.edit(full_instructions)
+                                            await instructions.edit(content=full_instructions)
                                             await instructions.clear_reactions()
                                             add_reaction_async(instructions, '🔼')
                                             add_reaction_async(instructions, '🔽')
