@@ -22,6 +22,16 @@ def cause_effect(itemNumber, shotgun):
                 shotgun.current_opponent.handcuffed = True
                 return True, None
             return False, None
+        case 6:
+            current_bullets = shotgun.slugs[:]
+            current_bullets.append(0)
+            shotgun.load_slugs(current_bullets)
+            return True, None
+        case 7:
+            current_bullets = shotgun.slugs[:]
+            current_bullets.append(1)
+            shotgun.load_slugs(current_bullets)
+            return True, None
         case _:
             return False, None
     return True, None

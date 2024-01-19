@@ -194,7 +194,7 @@ class GameChannel:
                                 if success:
                                     if effect:
                                         await channel.send(effect, silent=True)
-                                        time.sleep(5)
+                                        await asyncio.sleep(5)
                                     shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
                                     break_reactions_loop = True
                                     break
