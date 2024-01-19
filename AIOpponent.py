@@ -31,19 +31,19 @@ class AiOp:
         items = self.player_obj.inventory
         if 1 in items:
             if self.player_obj.hp < self.player_obj.max_hp:
-                cause_effect(1, self.shotgun)
+                _, effect = cause_effect(1, self.shotgun)
                 self.player_obj.inventory.pop(items.index(1))
-                return True, 1, None
+                return True, 1, effect
         if 5 in items:
             if not (self.opponent_obj.handcuffed or self.opponent_obj.handcuffed_this_round):
-                cause_effect(5, self.shotgun)
+                _, effect = cause_effect(5, self.shotgun)
                 self.player_obj.inventory.pop(items.index(5))
-                return True, 5, None
+                return True, 5, effect
         if 6 in items:
             if self.knows_next and self.shotgun.slugs[0] == 0 and not self.knows_second:
-                cause_effect(6, self.shotgun)
+                _, effect = cause_effect(6, self.shotgun)
                 self.player_obj.inventory.pop(items.index(6))
-                return True, 6, None
+                return True, 6, effect
         if 4 in items:
             if not (self.knows_next or (self.live_percentage == 1.0 or self.live_percentage == 0.0)):
                 _, effect = cause_effect(4, self.shotgun)
@@ -68,13 +68,13 @@ class AiOp:
         if 2 in items and not self.shotgun.dmg == 2:
             if self.knows_next:
                 if self.shotgun.slugs[0] == 1:
-                    cause_effect(2, self.shotgun)
+                    _, effect = cause_effect(2, self.shotgun)
                     self.player_obj.inventory.pop(items.index(2))
-                    return True, 2, None
+                    return True, 2, effect
             elif self.live_percentage > 0.67:
-                cause_effect(2, self.shotgun)
+                _, effect = cause_effect(2, self.shotgun)
                 self.player_obj.inventory.pop(items.index(2))
-                return True, 2, None
+                return True, 2, effect
         return False, None, None
 
     def should_shoot_self(self):

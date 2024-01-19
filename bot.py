@@ -157,6 +157,8 @@ class GameChannel:
             inactive_player_stats = None
             instructions = None
             while(s_player1.hp > 0 and s_player2.hp > 0):
+                active_player = shotgun.current_holder
+                inactive_player = shotgun.current_opponent
                 if active_player_stats and inactive_player_stats:
                     async with channel.typing():
                         await active_player_stats.delete()
@@ -183,23 +185,13 @@ class GameChannel:
                         for i in range(0, len(log_messages)):
                             await log_messages[i].delete()
                         log_messages = []
-                    player1_stats = get_player_stats(s_player1, shotgun)
-                    player2_stats = get_player_stats(s_player2, shotgun)
                     async with channel.typing():
-                        if shotgun.current_holder == s_player1:
-                            if active_player_stats and inactive_player_stats:
-                                active_player_stats = await active_player_stats.edit(content=player1_stats)
-                                inactive_player_stats = await inactive_player_stats.edit(content=player2_stats)
-                            else:
-                                active_player_stats = await channel.send(player1_stats)
-                                inactive_player_stats = await channel.send(player2_stats)
+                        if active_player_stats and inactive_player_stats:
+                            await active_player_stats.edit(content=get_player_stats(active_player, shotgun))
+                            await inactive_player_stats.edit(content=get_player_stats(inactive_player, shotgun))
                         else:
-                            if active_player_stats and inactive_player_stats:
-                                inactive_player_stats = await inactive_player_stats.edit(content=player1_stats)
-                                active_player_stats = await active_player_stats.edit(content=player2_stats)
-                            else:
-                                inactive_player_stats = await channel.send(player1_stats)
-                                active_player_stats = await channel.send(player2_stats)
+                            active_player_stats = await channel.send(get_player_stats(active_player, shotgun))
+                            inactive_player_stats = await channel.send(get_player_stats(inactive_player, shotgun))
                     if shotgun.current_holder.aiop:
                         if instructions:
                             await instructions.delete()
@@ -282,14 +274,12 @@ class GameChannel:
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
                                         async with channel.typing():
                                             await active_player_stats.clear_reactions()
-                                            if shotgun.current_holder == player1:
-                                                await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
-                                                if used_item == 5:
-                                                    await inactive_player_stats.edit(content=get_player_stats(shotgun.current_opponent, shotgun))
+                                            if active_player_stats and inactive_player_stats:
+                                                await active_player_stats.edit(content=get_player_stats(active_player, shotgun))
+                                                await inactive_player_stats.edit(content=get_player_stats(inactive_player, shotgun))
                                             else:
-                                                if used_item == 5:
-                                                    await inactive_player_stats.edit(content=get_player_stats(shotgun.current_opponent, shotgun))
-                                                await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
+                                                active_player_stats = await channel.send(get_player_stats(active_player, shotgun))
+                                                inactive_player_stats = await channel.send(get_player_stats(inactive_player, shotgun))
                                             new_inventory = shotgun.current_holder.get_beautiful_inv()
                                             if new_inventory:
                                                 for i in range(0, len(new_inventory)):
