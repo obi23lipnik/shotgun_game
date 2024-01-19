@@ -177,7 +177,7 @@ class GameChannel:
                             if used_item:
                                 if effect:
                                     async with channel.typing():
-                                        await active_player_stats.edit(get_player_stats(shotgun.current_holder, shotgun))
+                                        await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
                                         await channel.send(effect, silent=True)
                             else:
                                 break
@@ -245,7 +245,7 @@ class GameChannel:
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
                                         async with channel.typing():
                                             await active_player_stats.clear_reactions()
-                                            await active_player_stats.edit(get_player_stats(shotgun.current_holder, shotgun))
+                                            await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
                                             new_inventory = shotgun.current_holder.get_beautiful_inv()
                                             if new_inventory:
                                                 for i in range(0, len(new_inventory)):
