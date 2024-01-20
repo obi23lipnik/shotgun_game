@@ -6,7 +6,7 @@ from discord_token import TOKEN
 from AIOpponent import AiOp
 from Player import Player, get_hp_display, get_inventory_display
 from Shotgun import Shotgun, beautify_slugs, cause_effect, get_random_slugs
-from constants import b_nums, nums_b, cool_win_messages, items_list, items_description, aiop_item_use_messages
+from constants import b_nums, nums_b, cool_win_messages, items_list, items_description, cool_suicide_messages
 
 
 intents = discord.Intents.default()
@@ -14,6 +14,20 @@ intents.message_content = True
 intents.moderation = True
 game_channels = []
 skip_tutorial_users = []
+skip_tutorial_users_file = open('skip_tutorial.txt', 'r')
+for user_mention in skip_tutorial_users_file.readlines():
+    skip_tutorial_users.append(user_mention)
+
+async def remember_skip_tutorial_user(user_mention):
+    skip_tutorial_users_file_w = open('skip_tutorial.txt', 'a')
+    skip_tutorial_users_file_w.write(user_mention)
+
+async def forget_skip_tutorial_user(user_mention):
+    skip_tutorial_users_file = open('skip_tutorial.txt', 'r')
+    skip_tutorial_users_file_w = open('skip_tutorial.txt', 'w')
+    for line in skip_tutorial_users_file.readlines():
+        if line != user_mention: 
+            skip_tutorial_users_file_w.write(line)
 
 def get_everyone_role(server_roles):
     for role in server_roles:
@@ -324,11 +338,15 @@ class GameChannel:
                                             await asyncio.sleep(3)
                                             break
                                         case '⏭️':
+                                            loop = asyncio.get_event_loop()
+                                            loop.create_task(remember_skip_tutorial_user(shotgun.current_holder.name))
                                             skip_tutorial_users.append(shotgun.current_holder.name)
                                             await instructions.delete()
                                             instructions = None
                                             break
                                         case 'ℹ️':
+                                            loop = asyncio.get_event_loop()
+                                            loop.create_task(forget_skip_tutorial_user(shotgun.current_holder.name))
                                             skip_tutorial_users.pop(skip_tutorial_users.index(shotgun.current_holder.name))
                                             await instructions.delete()
                                             instructions = None
@@ -341,6 +359,9 @@ class GameChannel:
         else:
             winner = s_player1 if s_player1.hp > 0 else s_player2
             loser = s_player1 if s_player1.hp <= 0 else s_player2
+            win_messages = cool_win_messages
+            if loser == shotgun.current_opponent:
+                win_messages += cool_suicide_messages
             win_message = random.choice(cool_win_messages)
             await channel.send(win_message.format(winner=winner.name, loser=loser.name), silent=True)
             await asyncio.sleep(15)

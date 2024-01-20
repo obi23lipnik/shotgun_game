@@ -67,14 +67,24 @@ cool_win_messages = (
     '{loser} did not win. In fact, they\'re dead.',
     'You are sick {winner}.. You didn\'t need to use that shotgun, you two could have been friends..',
     'Two men enter, one man, woman or a they leaves. The one that leaves is {winner}',
-    '{loser} could benefit from learning about gun safety, but they\'re dead now anyway. Congrats {winner}',
     'When life gave you lemons, you shot your friend in the face with a shotgun. Congrats {winner}.',
     'On this day {winner} found themself victorious, congratulations - {loser} found themself fuckin dead.',
     'When {winner} was in doubt, they shot {loser} in their loser face',
     '{winner} YOU WON!',
     '{winner} > {loser}',
-    'There\'s two types of people in the world: One type is good at things and the other type is {loser}',
     '{loser} do better',
     'Wow, {winner} has zero chill. They are alive though.',
-    '{loser}: need help mid\n{winner}: KY$ n00b\n{loser} DIED!'
+    'Violets are blue, Roses are red, Leaves are brown and {loser} is dead. Congrats {winner}',
+    '{winner} just killed {loser} with a shotgun! SOMEONE CALL THE POLICE!?',
 )
+
+cool_suicide_messages = (
+    'There\'s two types of people in the world: One type is good at things and the other type is {loser}',
+    '{loser}: need help mid\n{winner}: KY$ n00b\n{loser} DIED!',
+    '{loser} could benefit from learning about gun safety, but they\'re dead now anyway. Congrats {winner}',
+    '{loser} made a calculated move.. but they were bad at math, so they are dead. Congrats {winner}',
+    'Oops, {winner} have {loser} the wrong number for suicide prevention hotline.',
+    '{looser} didn\'t have much to live for anyway..',
+    '{loser} do you even statistics and variability? Sheesh.',
+    '{loser} was not long for this world🥀😭',
+),
