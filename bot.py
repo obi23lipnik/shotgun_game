@@ -101,10 +101,10 @@ class GameChannel:
         while(not stop_outer_loop and channel):
             await channel.purge()
             await channel.send('Player: ' + player1.mention + ' is waiting to play...')
-            message = await channel.send('Do you want to play a game of shotgun with ' + player1.display_name + '? ('+ player1.name +' can press 👤 to play with AI or ❌ to cancel lobby)', silent=True)
+            message = await channel.send('Do you want to play a game of shotgun with ' + player1.display_name + '? ('+ player1.display_name +' can press 👤 to play with AI or ❌ to cancel lobby)', silent=True)
             add_reaction_async(message, '<:voted:1197236357249114233>')
-            add_reaction_async(message, '❌')
             add_reaction_async(message, '👤')
+            add_reaction_async(message, '❌')
 
             while (not stop_inner_loop):
                 try:
