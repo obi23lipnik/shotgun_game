@@ -141,7 +141,7 @@ class GameChannel:
             return (
                 reaction.message.channel.id == self.channel_id and 
                 user != client.user and
-                user.mention in (player1, player2)
+                user in (player1, player2)
             )
         s_player1 = None
         s_player2 = None
