@@ -1,7 +1,7 @@
 import asyncio
 import random
 
-import discord
+import interactions
 from discord_token import TOKEN
 from AIOpponent import AiOp
 from Player import Player, get_hp_display, get_inventory_display
@@ -9,7 +9,7 @@ from Shotgun import Shotgun, beautify_slugs, cause_effect, get_random_slugs
 from constants import b_nums, nums_b, cool_win_messages, items_list, items_description, neutral_win_messages, cool_suicide_messages
 
 
-intents = discord.Intents.default()
+intents = interactions.Intents.default()
 intents.message_content = True
 intents.moderation = True
 game_channels = []
@@ -74,7 +74,7 @@ class GameChannel:
         self.channel_id = channel_id
 
     async def init_game_channel(self):
-        overwrite_everybody = discord.PermissionOverwrite()
+        overwrite_everybody = interactions.PermissionOverwrite()
         self.occupied = False
         overwrite_everybody.send_messages = False
         overwrite_everybody.add_reactions = False
@@ -93,7 +93,7 @@ class GameChannel:
                 reaction.message.channel.id == self.channel_id and 
                 user != client.user
             )
-        overwrite_everybody = discord.PermissionOverwrite()
+        overwrite_everybody = interactions.PermissionOverwrite()
         self.occupied = True
         overwrite_everybody.send_messages = False
         overwrite_everybody.add_reactions = False
@@ -372,7 +372,7 @@ class GameChannel:
 
                         
 
-class ShotgunGameBot(discord.Client):
+class ShotgunGameBot(interactions.Client):
     game_channels = []
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
@@ -393,7 +393,7 @@ class ShotgunGameBot(discord.Client):
             game_channels.append(ch)
             loop.create_task(ch.init_game_channel())
 
-    async def on_message(self, message):
+    async def on_message_create(self, message):
         if message.content.startswith('!shotgun'):
             channel = message.channel
             for game_channel in game_channels:
@@ -415,7 +415,27 @@ class ShotgunGameBot(discord.Client):
                 silent=True
             )
             await message.delete()
-        
+
+@interactions.slash_command(name="shotgun", description="Start a game of shotgun", scopes=[1092824291533410338])
+async def shotgun_start_game_command(ctx: interactions.SlashContext):
+    for game_channel in game_channels:
+        for guild_channel in ctx.guild.get_channels():
+            if guild_channel == game_channel:
+                if not game_channel.occupied:
+                    game_channel.occupied = True
+                    loop = asyncio.get_event_loop()
+                    loop.create_task(game_channel.setup_game_channel(ctx.message.author))
+                    await ctx.send(
+                        'We have a room waiting for you '+ctx.author.mention+': ' + game_channel.mention,
+                        delete_after=10,
+                        silent=True
+                    )
+                    return
+        await ctx.send(
+            'No available channels, sorry ' + ctx.author.mention + '! Try again later',
+            delete_after=10,
+            silent=True
+        )
 
 client = ShotgunGameBot(intents=intents)
 client.run(TOKEN)
