@@ -360,7 +360,7 @@ class GameChannel:
             winner = s_player1 if s_player1.hp > 0 else s_player2
             loser = s_player1 if s_player1.hp <= 0 else s_player2
             win_messages = neutral_win_messages
-            if loser == shotgun.current_opponent:
+            if loser == shotgun.current_holder:
                 win_messages += cool_suicide_messages
             else:
                 win_messages += cool_win_messages
