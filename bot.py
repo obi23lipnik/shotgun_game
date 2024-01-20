@@ -393,7 +393,7 @@ async def ready_up(event: interactions.api.events.Startup):
 @interactions.slash_command(name="shotgun", description="Start a game of shotgun", scopes=[1092824291533410338])
 async def shotgun_start_game_command(ctx: interactions.SlashContext):
     for game_channel in game_channels:
-        for guild_channel in ctx.guild.get_channels():
+        for guild_channel in ctx.guild.channels:
             if guild_channel == game_channel:
                 if not game_channel.occupied:
                     game_channel.occupied = True
