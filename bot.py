@@ -6,7 +6,7 @@ from discord_token import TOKEN
 from AIOpponent import AiOp
 from Player import Player, get_hp_display, get_inventory_display
 from Shotgun import Shotgun, beautify_slugs, cause_effect, get_random_slugs
-from constants import b_nums, nums_b, cool_win_messages, items_list, items_description, cool_suicide_messages
+from constants import b_nums, nums_b, cool_win_messages, items_list, items_description, neutral_win_messages, cool_suicide_messages
 
 
 intents = discord.Intents.default()
@@ -359,9 +359,11 @@ class GameChannel:
         else:
             winner = s_player1 if s_player1.hp > 0 else s_player2
             loser = s_player1 if s_player1.hp <= 0 else s_player2
-            win_messages = cool_win_messages
+            win_messages = neutral_win_messages
             if loser == shotgun.current_opponent:
                 win_messages += cool_suicide_messages
+            else:
+                win_messages += cool_win_messages
             win_message = random.choice(cool_win_messages)
             await channel.send(win_message.format(winner=winner.name, loser=loser.name), silent=True)
             await asyncio.sleep(15)

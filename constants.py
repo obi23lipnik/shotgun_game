@@ -64,18 +64,21 @@ aiop_item_use_messages = {
 cool_win_messages = (
     '{winner} shot {loser} with a shotgun. And kept shooting him until he was dead...'
     '\n{winner} is clearly a real winner, folks.',
-    '{loser} did not win. In fact, they\'re dead.',
     'You are sick {winner}.. You didn\'t need to use that shotgun, you two could have been friends..',
-    'Two men enter, one man, woman or a they leaves. The one that leaves is {winner}',
     'When life gave you lemons, you shot your friend in the face with a shotgun. Congrats {winner}.',
-    'On this day {winner} found themself victorious, congratulations - {loser} found themself fuckin dead.',
     'When {winner} was in doubt, they shot {loser} in their loser face',
+    'Wow, {winner} has zero chill. They are alive though.',
+    '{winner} just killed {loser} with a shotgun! SOMEONE CALL THE POLICE!?',
+)
+
+neutral_win_messages = (
+    '{loser} did not win. In fact, they\'re dead.',
+    'Two men enter, one man, woman or a they leaves. The one that leaves is {winner}',
+    'On this day {winner} found themself victorious, congratulations - {loser} found themself fuckin dead.',
     '{winner} YOU WON!',
     '{winner} > {loser}',
     '{loser} do better',
-    'Wow, {winner} has zero chill. They are alive though.',
     'Violets are blue, Roses are red, Leaves are brown and {loser} is dead. Congrats {winner}',
-    '{winner} just killed {loser} with a shotgun! SOMEONE CALL THE POLICE!?',
 )
 
 cool_suicide_messages = (
