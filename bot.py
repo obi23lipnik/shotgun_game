@@ -388,25 +388,6 @@ async def ready_up(event: interactions.api.events.Login):
             game_channels.append(ch)
             loop.create_task(ch.init_game_channel())
 
-@interactions.listen(interactions.api.events.Login)
-async def ready_up(event: interactions.api.events.Login):
-        print(f'Logged on as {event.bot}!')
-        for server in event.bot.guilds:
-            server_channels = 0
-            for channel in server.channels:
-                if channel.name.startswith('shotgun_game'):
-                    print(channel.guild.name + '> ' + channel.name)
-                    game_channels.append(channel)
-                    server_channels += 1
-                    if server_channels >= 3:
-                        break
-        print(game_channels)
-        loop = asyncio.get_event_loop()
-        for channel in game_channels:
-            ch = GameChannel(channel.id)
-            game_channels.append(ch)
-            loop.create_task(ch.init_game_channel())
-
 @interactions.slash_command(name="shotgun", description="Start a game of shotgun", scopes=[1092824291533410338])
 async def shotgun_start_game_command(ctx: interactions.SlashContext):
     for game_channel in game_channels:
