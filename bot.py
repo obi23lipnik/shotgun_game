@@ -373,7 +373,7 @@ class GameChannel:
 async def ready_up(event: interactions.api.events.Startup):
         print(f'Logged on as {event.bot}!')
         server_channels = 0
-        open_channels = 0
+        open_channels = []
         for guild in client.guilds:
             for channel in guild.channels:
                 channel.id
