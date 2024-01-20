@@ -393,18 +393,16 @@ async def ready_up(event: interactions.api.events.Startup):
 @interactions.slash_command(name="shotgun", description="Start a game of shotgun", scopes=[1092824291533410338])
 async def shotgun_start_game_command(ctx: interactions.SlashContext):
     for game_channel in game_channels:
-        for guild_channel in ctx.guild.channels:
-            if guild_channel == game_channel:
-                if not game_channel.occupied:
-                    game_channel.occupied = True
-                    loop = asyncio.get_event_loop()
-                    loop.create_task(game_channel.setup_game_channel(ctx.message.author))
-                    await ctx.send(
-                        'We have a room waiting for you '+ctx.author.mention+': ' + game_channel.mention,
-                        delete_after=10,
-                        silent=True
-                    )
-                    return
+        if not game_channel.occupied:
+            game_channel.occupied = True
+            loop = asyncio.get_event_loop()
+            loop.create_task(game_channel.setup_game_channel(ctx.message.author))
+            await ctx.send(
+                'We have a room waiting for you '+ctx.author.mention+': ' + game_channel.mention,
+                delete_after=10,
+                silent=True
+            )
+            return
         await ctx.send(
             'No available channels, sorry ' + ctx.author.mention + '! Try again later',
             delete_after=10,
