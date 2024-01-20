@@ -72,7 +72,7 @@ class GameChannel:
         self.channel_id = channel_id
 
     async def init_game_channel(self):
-        overwrite_everybody = interactions.PermissionOverwrite()
+        overwrite_everybody = interactions.PermissionOverwrite(self.channel_id)
         self.occupied = False
         overwrite_everybody.send_messages = False
         overwrite_everybody.add_reactions = False
