@@ -9,7 +9,7 @@ from Shotgun import Shotgun, beautify_slugs, cause_effect, get_random_slugs
 from constants import b_nums, nums_b, cool_win_messages, items_list, items_description, neutral_win_messages, cool_suicide_messages
 
 
-intents = interactions.Intents.default()
+intents = interactions.Intents.DEFAULT
 intents.message_content = True
 intents.moderation = True
 game_channels = []
