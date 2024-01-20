@@ -22,6 +22,7 @@ class Player:
     inventory = []
     aiop = None
     stats_message = None
+    is_last_shot_self = False
 
     def __init__(self, name=None, hp=None, inventory=None, aiop=None):
         if hp:

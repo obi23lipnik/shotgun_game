@@ -100,6 +100,7 @@ class Shotgun:
         self.current_opponent = temp_opponent
 
     def shoot_self(self):
+        self.current_holder.is_last_shot_self = True
         used_slug = self.slugs[0]
         if used_slug:  # Slug was live
             self.current_holder.change_hp(-self.dmg)
@@ -109,6 +110,7 @@ class Shotgun:
         return used_slug
 
     def shoot_opponent(self):
+        self.current_holder.is_last_shot_self = False
         used_slug = self.slugs[0]
         if used_slug:  # Slug was live
             self.current_opponent.change_hp(-self.dmg)
