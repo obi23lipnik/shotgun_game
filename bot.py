@@ -76,14 +76,14 @@ class GameChannel:
         channel = None
         channel = client.get_channel(self.channel_id)
         everyone_role = get_everyone_role(channel.guild.roles)
-        await channel.set_permissions(
+        await channel.set_permission(
             everyone_role,
             send_messages=False,
             add_reactions=False,
             read_messages=False,
             view_channel=True
         )
-        await channel.set_permissions(client.user, send_messages=True, add_reactions=True)
+        await channel.set_permission(client.user, send_messages=True, add_reactions=True)
         await channel.purge()
 
     async def setup_game_channel(self, player1):
