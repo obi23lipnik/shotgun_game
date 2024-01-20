@@ -192,11 +192,11 @@ class GameChannel:
                             used_item, item, effect = shotgun.current_holder.aiop.use_item()
                             print(used_item, item, effect)
                             if used_item:
+                                if item == 5:
+                                    await s_player1.stats_message.edit(content=get_player_stats(s_player1, shotgun))
                                 if effect:
                                     async with channel.typing():
                                         await s_player2.stats_message.edit(content=get_player_stats(s_player2, shotgun))
-                                        if used_item == 5:
-                                            await s_player1.stats_message.edit(content=get_player_stats(s_player1, shotgun))
                                         log_messages.append(await channel.send(effect, silent=True))
                             else:
                                 break
