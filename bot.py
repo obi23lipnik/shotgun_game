@@ -373,13 +373,14 @@ class GameChannel:
 async def ready_up(event: interactions.api.events.Login):
         print(f'Logged on as {event.bot}!')
         server_channels = 0
-        for channel in event.guild.get_channels():
-            if channel.name.startswith('shotgun_game'):
-                print(channel.guild.name + '> ' + channel.name)
-                game_channels.append(channel)
-                server_channels += 1
-                if server_channels >= 3:
-                    break
+        for guild in client.guilds:
+            for channel in guild.channels:
+                if channel.name.startswith('shotgun_game'):
+                    print(channel.guild.name + '> ' + channel.name)
+                    game_channels.append(channel)
+                    server_channels += 1
+                    if server_channels >= 3:
+                        break
         print(game_channels)
         loop = asyncio.get_event_loop()
         for channel in game_channels:
