@@ -66,11 +66,9 @@ def get_instructions(shotgun, full=True):
         return 'Turn: ' + shotgun.current_holder.name
 
 class GameChannel:
-    client = None
     channel_id = None
     occupied = False
-    def __init__(self, client, channel_id):
-        self.client = client
+    def __init__(self, channel_id):
         self.channel_id = channel_id
 
     async def init_game_channel(self):
@@ -81,10 +79,10 @@ class GameChannel:
         overwrite_everybody.read_messages = False
         overwrite_everybody.view_channel = True
         channel = None
-        channel = self.client.get_channel(self.channel_id)
+        channel = client.get_channel(self.channel_id)
         everyone_role = get_everyone_role(channel.guild.roles)
         await channel.set_permissions(everyone_role, overwrite=overwrite_everybody)
-        await channel.set_permissions(self.client.user, send_messages=True, add_reactions=True)
+        await channel.set_permissions(client.user, send_messages=True, add_reactions=True)
         await channel.purge()
 
     async def setup_game_channel(self, player1):
@@ -100,10 +98,10 @@ class GameChannel:
         overwrite_everybody.read_messages = True
         overwrite_everybody.view_channel = True
         channel = None
-        channel = self.client.get_channel(self.channel_id)
+        channel = client.get_channel(self.channel_id)
         everyone_role = get_everyone_role(channel.guild.roles)
         await channel.set_permissions(everyone_role, overwrite=overwrite_everybody)
-        await channel.set_permissions(self.client.user, send_messages=True, add_reactions=True)
+        await channel.set_permissions(client.user, send_messages=True, add_reactions=True)
         stop_inner_loop = False
         stop_outer_loop = False
         while(not stop_outer_loop and channel):
@@ -116,7 +114,7 @@ class GameChannel:
 
             while (not stop_inner_loop):
                 try:
-                    reaction, player2 = await self.client.wait_for('reaction_add', check=check, timeout=600)
+                    reaction, player2 = await client.wait_for('reaction_add', check=check, timeout=600)
                 except asyncio.TimeoutError:
                     await channel.purge()
                     stop_inner_loop = True
@@ -270,7 +268,7 @@ class GameChannel:
                             add_reaction_async(shotgun.current_holder.stats_message, b_nums[i+1])
                         break_reactions_loop = False
                         while(not break_reactions_loop):
-                            reaction, player = await self.client.wait_for('reaction_add', check=check, timeout=600)
+                            reaction, player = await client.wait_for('reaction_add', check=check, timeout=600)
                             if player.id == client.user.id:
                                 continue
                             elif not player.mention == shotgun.current_holder.name:
@@ -370,52 +368,26 @@ class GameChannel:
             await channel.purge()
             await self.init_game_channel()
 
-                        
 
-class ShotgunGameBot(interactions.Client):
-    game_channels = []
-    async def on_ready(self):
-        print(f'Logged on as {self.user}!')
-
-        for server in self.guilds:
+@interactions.listen(interactions.api.events.Login)
+async def ready_up(event: interactions.api.events.Login):
+        print(f'Logged on as {event.bot}!')
+        for server in event.bot.guilds:
             server_channels = 0
             for channel in server.channels:
                 if channel.name.startswith('shotgun_game'):
                     print(channel.guild.name + '> ' + channel.name)
-                    self.game_channels.append(channel)
+                    game_channels.append(channel)
                     server_channels += 1
                     if server_channels >= 3:
                         break
-        print(self.game_channels)
+        print(game_channels)
         loop = asyncio.get_event_loop()
-        for channel in self.game_channels:
-            ch = GameChannel(self, channel.id)
+        for channel in game_channels:
+            ch = GameChannel(channel.id)
             game_channels.append(ch)
             loop.create_task(ch.init_game_channel())
 
-    async def on_message_create(self, message):
-        if message.content.startswith('!shotgun'):
-            channel = message.channel
-            for game_channel in game_channels:
-                g_channel = self.get_channel(game_channel.channel_id)
-                if g_channel.guild == channel.guild:
-                    if not game_channel.occupied:
-                        game_channel.occupied = True
-                        loop = asyncio.get_event_loop()
-                        loop.create_task(game_channel.setup_game_channel(message.author))
-                        await channel.send(
-                            'We have a room waiting for you '+message.author.mention+': ' + g_channel.mention,
-                            delete_after=10,
-                            silent=True
-                        )
-                        return
-            await channel.send(
-                'No available channels, sorry ' + message.author.mention + '! Try again later',
-                delete_after=10,
-                silent=True
-            )
-            await message.delete()
-"""
 @interactions.slash_command(name="shotgun", description="Start a game of shotgun", scopes=[1092824291533410338])
 async def shotgun_start_game_command(ctx: interactions.SlashContext):
     for game_channel in game_channels:
@@ -436,6 +408,6 @@ async def shotgun_start_game_command(ctx: interactions.SlashContext):
             delete_after=10,
             silent=True
         )
-"""
-client = ShotgunGameBot(intents=intents)
+
+client = interactions.Client(intents=intents)
 client.start(TOKEN)
