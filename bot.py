@@ -180,7 +180,7 @@ class GameChannel:
                             await s_player1.stats_message.edit(content=get_player_stats(s_player1, shotgun))
                         else:
                             s_player1.stats_message = await channel.send(get_player_stats(s_player1, shotgun))
-                        if s_player2.stats.message:
+                        if s_player2.stats_message:
                             await s_player2.stats_message.edit(content=get_player_stats(s_player2, shotgun))
                         else:
                             s_player2.stats_message = await channel.send(get_player_stats(s_player2, shotgun))
@@ -273,7 +273,7 @@ class GameChannel:
                                                 await s_player1.stats_message.edit(content=get_player_stats(s_player1, shotgun))
                                             else:
                                                 s_player1.stats_message = await channel.send(get_player_stats(s_player1, shotgun))
-                                            if s_player2.stats.message:
+                                            if s_player2.stats_message:
                                                 await s_player2.stats_message.edit(content=get_player_stats(s_player2, shotgun))
                                             else:
                                                 s_player2.stats_message = await channel.send(get_player_stats(s_player2, shotgun))
