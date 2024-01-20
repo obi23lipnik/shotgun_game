@@ -21,6 +21,7 @@ class Player:
     handcuffed_this_round = False
     inventory = []
     aiop = None
+    stats_message = None
 
     def __init__(self, name=None, hp=None, inventory=None, aiop=None):
         if hp:

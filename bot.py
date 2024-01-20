@@ -153,18 +153,8 @@ class GameChannel:
         await channel.purge()
         try:
             log_messages = []
-            active_player_stats = None
-            inactive_player_stats = None
             instructions = None
             while(s_player1.hp > 0 and s_player2.hp > 0):
-                active_player = shotgun.current_holder
-                inactive_player = shotgun.current_opponent
-                if active_player_stats and inactive_player_stats:
-                    async with channel.typing():
-                        await active_player_stats.delete()
-                        await inactive_player_stats.delete()
-                    active_player_stats = None
-                    inactive_player_stats = None
                 for _ in range(0, random.randint(1, 3)):
                     s_player1.add_item_to_inventory()
                     s_player2.add_item_to_inventory()
@@ -186,12 +176,14 @@ class GameChannel:
                             await log_messages[i].delete()
                         log_messages = []
                     async with channel.typing():
-                        if active_player_stats and inactive_player_stats:
-                            await active_player_stats.edit(content=get_player_stats(active_player, shotgun))
-                            await inactive_player_stats.edit(content=get_player_stats(inactive_player, shotgun))
+                        if s_player1.stats_message:
+                            await s_player1.stats_message.edit(content=get_player_stats(s_player1, shotgun))
                         else:
-                            active_player_stats = await channel.send(get_player_stats(active_player, shotgun))
-                            inactive_player_stats = await channel.send(get_player_stats(inactive_player, shotgun))
+                            s_player1.stats_message = await channel.send(get_player_stats(s_player1, shotgun))
+                        if s_player2.stats.message:
+                            await s_player2.stats_message.edit(content=get_player_stats(s_player2, shotgun))
+                        else:
+                            s_player2.stats_message = await channel.send(get_player_stats(s_player2, shotgun))
                     if shotgun.current_holder.aiop:
                         if instructions:
                             await instructions.delete()
@@ -202,7 +194,9 @@ class GameChannel:
                             if used_item:
                                 if effect:
                                     async with channel.typing():
-                                        await active_player_stats.edit(content=get_player_stats(shotgun.current_holder, shotgun))
+                                        await s_player2.stats_message.edit(content=get_player_stats(s_player2, shotgun))
+                                        if used_item == 5:
+                                            await s_player1.stats_message.edit(content=get_player_stats(s_player1, shotgun))
                                         log_messages.append(await channel.send(effect, silent=True))
                             else:
                                 break
@@ -252,7 +246,7 @@ class GameChannel:
                             add_reaction_async(instructions, '⏭️')
                         b_inventory = shotgun.current_holder.get_beautiful_inv()
                         for i in range(0, len(b_inventory)):
-                            add_reaction_async(active_player_stats, b_nums[i+1])
+                            add_reaction_async(shotgun.current_holder.stats_message, b_nums[i+1])
                         break_reactions_loop = False
                         while(not break_reactions_loop):
                             reaction, player = await self.client.wait_for('reaction_add', check=check, timeout=600)
@@ -273,17 +267,20 @@ class GameChannel:
                                                 log_messages.append(await channel.send(effect, silent=True))
                                         shotgun.current_holder.inventory.pop(nums_b[reaction.emoji]-1)
                                         async with channel.typing():
-                                            await active_player_stats.clear_reactions()
-                                            if active_player_stats and inactive_player_stats:
-                                                await active_player_stats.edit(content=get_player_stats(active_player, shotgun))
-                                                await inactive_player_stats.edit(content=get_player_stats(inactive_player, shotgun))
+                                            await shotgun.current_holder.stats_message.clear_reactions()
+                                            await shotgun.current_opponent.stats_message.clear_reactions()
+                                            if s_player1.stats_message:
+                                                await s_player1.stats_message.edit(content=get_player_stats(s_player1, shotgun))
                                             else:
-                                                active_player_stats = await channel.send(get_player_stats(active_player, shotgun))
-                                                inactive_player_stats = await channel.send(get_player_stats(inactive_player, shotgun))
+                                                s_player1.stats_message = await channel.send(get_player_stats(s_player1, shotgun))
+                                            if s_player2.stats.message:
+                                                await s_player2.stats_message.edit(content=get_player_stats(s_player2, shotgun))
+                                            else:
+                                                s_player2.stats_message = await channel.send(get_player_stats(s_player2, shotgun))
                                             new_inventory = shotgun.current_holder.get_beautiful_inv()
                                             if new_inventory:
                                                 for i in range(0, len(new_inventory)):
-                                                    add_reaction_async(active_player_stats, b_nums[i+1])
+                                                    add_reaction_async(shotgun.current_holder.stats_message, b_nums[i+1])
                                     else:
                                         async with channel.typing():
                                             await channel.send('Can\'t use that item right now...', delete_after=3, silent=True)
