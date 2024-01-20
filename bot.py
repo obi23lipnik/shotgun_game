@@ -95,17 +95,7 @@ class GameChannel:
                 reaction.message.channel.id == self.channel_id and 
                 user != client.user
             )
-        overwrite_everybody = interactions.PermissionOverwrite()
-        self.occupied = True
-        overwrite_everybody.send_messages = False
-        overwrite_everybody.add_reactions = False
-        overwrite_everybody.read_messages = True
-        overwrite_everybody.view_channel = True
-        channel = None
         channel = client.get_channel(self.channel_id)
-        everyone_role = get_everyone_role(channel.guild.roles)
-        await channel.set_permissions(everyone_role, overwrite=overwrite_everybody)
-        await channel.set_permissions(client.user, send_messages=True, add_reactions=True)
         stop_inner_loop = False
         stop_outer_loop = False
         while(not stop_outer_loop and channel):
@@ -396,7 +386,7 @@ async def ready_up(event: interactions.api.events.Startup):
 @interactions.slash_command(name="shotgun", description="Start a game of shotgun", scopes=[1092824291533410338])
 async def shotgun_start_game_command(ctx: interactions.SlashContext):
     for game_channel in game_channels:
-        if not game_channel.occupied:
+        if not game_channel.occupied and game_channel.channel_id in (channel_id for channel_id in ctx.guild.channels):
             game_channel.occupied = True
             loop = asyncio.get_event_loop()
             loop.create_task(game_channel.setup_game_channel(ctx.user))
