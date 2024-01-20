@@ -438,4 +438,4 @@ async def shotgun_start_game_command(ctx: interactions.SlashContext):
         )
 
 client = ShotgunGameBot(intents=intents)
-client.run(TOKEN)
+client.start(TOKEN)
