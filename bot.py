@@ -80,7 +80,7 @@ class GameChannel:
             everyone_role,
             send_messages=False,
             add_reactions=False,
-            read_messages=False,
+            read_message_history=True,
             view_channel=True
         )
         await channel.set_permission(client.user, send_messages=True, add_reactions=True)
