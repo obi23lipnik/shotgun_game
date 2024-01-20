@@ -77,7 +77,7 @@ class GameChannel:
         def check(reaction, user):
             return (
                 reaction.message.channel.id == self.channel_id and 
-                reaction.message.author.id != self.client.id
+                reaction.message.author.id != client.user.id
             )
         overwrite_everybody = discord.PermissionOverwrite()
         self.occupied = True
@@ -140,7 +140,7 @@ class GameChannel:
         def check(reaction, user):
             return (
                 reaction.message.channel.id == self.channel_id and 
-                reaction.message.author.id != self.client.id and
+                reaction.message.author.id != client.user.id and
                 reaction.message.author.mention in (player1, player2)
             )
         s_player1 = None
