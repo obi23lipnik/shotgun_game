@@ -72,16 +72,17 @@ class GameChannel:
         self.channel_id = channel_id
 
     async def init_game_channel(self):
-        overwrite_everybody = interactions.PermissionOverwrite()
         self.occupied = False
-        overwrite_everybody.send_messages = False
-        overwrite_everybody.add_reactions = False
-        overwrite_everybody.read_messages = False
-        overwrite_everybody.view_channel = True
         channel = None
         channel = client.get_channel(self.channel_id)
         everyone_role = get_everyone_role(channel.guild.roles)
-        await channel.set_permissions(everyone_role, overwrite=overwrite_everybody)
+        await channel.set_permissions(
+            everyone_role,
+            send_messages=False,
+            add_reactions=False,
+            read_messages=False,
+            view_channel=True
+        )
         await channel.set_permissions(client.user, send_messages=True, add_reactions=True)
         await channel.purge()
 
@@ -372,17 +373,19 @@ class GameChannel:
 async def ready_up(event: interactions.api.events.Startup):
         print(f'Logged on as {event.bot}!')
         server_channels = 0
+        open_channels = 0
         for guild in client.guilds:
             for channel in guild.channels:
+                channel.id
                 if channel.name.startswith('shotgun_game'):
                     print(channel.guild.name + '> ' + channel.name)
-                    game_channels.append(channel)
+                    open_channels.append(channel)
                     server_channels += 1
                     if server_channels >= 3:
                         break
-        print(game_channels)
+        print(open_channels)
         loop = asyncio.get_event_loop()
-        for channel in game_channels:
+        for channel in open_channels:
             ch = GameChannel(channel.id)
             game_channels.append(ch)
             loop.create_task(ch.init_game_channel())
