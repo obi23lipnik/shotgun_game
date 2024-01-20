@@ -108,7 +108,7 @@ class GameChannel:
 
             while (not stop_inner_loop):
                 try:
-                    reaction, player2 = await client.wait_for('reaction_add', check=check, timeout=600)
+                    reaction, player2 = await client.wait_for('reaction_add', checks=check, timeout=600)
                 except asyncio.TimeoutError:
                     await channel.purge()
                     stop_inner_loop = True
@@ -262,7 +262,7 @@ class GameChannel:
                             add_reaction_async(shotgun.current_holder.stats_message, b_nums[i+1])
                         break_reactions_loop = False
                         while(not break_reactions_loop):
-                            reaction, player = await client.wait_for('reaction_add', check=check, timeout=600)
+                            reaction, player = await client.wait_for('reaction_add', checks=check, timeout=600)
                             if player.id == client.user.id:
                                 continue
                             elif not player.mention == shotgun.current_holder.name:
