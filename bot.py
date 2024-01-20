@@ -369,8 +369,8 @@ class GameChannel:
             await self.init_game_channel()
 
 
-@interactions.listen(interactions.api.events.Login)
-async def ready_up(event: interactions.api.events.Login):
+@interactions.listen(interactions.api.events.Connect)
+async def ready_up(event: interactions.api.events.Connect):
         print(f'Logged on as {event.bot}!')
         server_channels = 0
         for guild in client.guilds:
