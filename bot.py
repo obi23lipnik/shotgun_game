@@ -415,7 +415,7 @@ class ShotgunGameBot(interactions.Client):
                 silent=True
             )
             await message.delete()
-
+"""
 @interactions.slash_command(name="shotgun", description="Start a game of shotgun", scopes=[1092824291533410338])
 async def shotgun_start_game_command(ctx: interactions.SlashContext):
     for game_channel in game_channels:
@@ -436,6 +436,6 @@ async def shotgun_start_game_command(ctx: interactions.SlashContext):
             delete_after=10,
             silent=True
         )
-
+"""
 client = ShotgunGameBot(intents=intents)
 client.start(TOKEN)
