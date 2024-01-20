@@ -75,7 +75,10 @@ class GameChannel:
 
     async def setup_game_channel(self, player1):
         def check(reaction, user):
-            return reaction.message.channel.id == self.channel_id
+            return (
+                reaction.message.channel.id == self.channel_id and 
+                reaction.message.author.id != self.client.id
+            )
         overwrite_everybody = discord.PermissionOverwrite()
         self.occupied = True
         overwrite_everybody.send_messages = False
@@ -135,7 +138,11 @@ class GameChannel:
 
     async def start_game(self, channel, player1, player2=None, play_ai=False):
         def check(reaction, user):
-            return reaction.message.channel.id == self.channel_id
+            return (
+                reaction.message.channel.id == self.channel_id and 
+                reaction.message.author.id != self.client.id and
+                reaction.message.author.mention in (player1, player2)
+            )
         s_player1 = None
         s_player2 = None
         shotgun = None
