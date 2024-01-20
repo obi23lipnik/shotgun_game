@@ -89,7 +89,7 @@ class GameChannel:
         await channel.set_permission(client.user, send_messages=True, add_reactions=True)
         await channel.purge()
 
-    async def setup_game_channel(self, player1):
+    async def setup_game_channel(self, player1: interactions.User):
         def check(reaction, user):
             return (
                 reaction.message.channel.id == self.channel_id and 
@@ -101,7 +101,7 @@ class GameChannel:
         while(not stop_outer_loop and channel):
             await channel.purge()
             await channel.send('Player: ' + player1.mention + ' is waiting to play...')
-            message = await channel.send('Do you want to play a game of shotgun with ' + player1.name + '? ('+ player1.name +' can press 👤 to play with AI or ❌ to cancel lobby)', silent=True)
+            message = await channel.send('Do you want to play a game of shotgun with ' + player1.display_name + '? ('+ player1.name +' can press 👤 to play with AI or ❌ to cancel lobby)', silent=True)
             add_reaction_async(message, '<:voted:1197236357249114233>')
             add_reaction_async(message, '❌')
             add_reaction_async(message, '👤')
@@ -397,11 +397,11 @@ async def shotgun_start_game_command(ctx: interactions.SlashContext):
                 silent=True
             )
             return
-        await ctx.send(
-            'No available channels, sorry ' + ctx.user.mention + '! Try again later',
-            delete_after=10,
-            silent=True
-        )
+    await ctx.send(
+        'No available channels, sorry ' + ctx.user.mention + '! Try again later',
+        delete_after=10,
+        silent=True
+    )
 
 client = interactions.Client(intents=intents)
 client.start(TOKEN)
