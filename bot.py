@@ -67,9 +67,12 @@ def get_instructions(shotgun, full=True):
 
 class GameChannel:
     channel_id = None
+    mention = None
     occupied = False
-    def __init__(self, channel_id):
+
+    def __init__(self, channel_id, mention):
         self.channel_id = channel_id
+        self.mention = mention
 
     async def init_game_channel(self):
         self.occupied = False
@@ -386,7 +389,7 @@ async def ready_up(event: interactions.api.events.Startup):
         print(open_channels)
         loop = asyncio.get_event_loop()
         for channel in open_channels:
-            ch = GameChannel(channel.id)
+            ch = GameChannel(channel.id, channel.mention)
             game_channels.append(ch)
             loop.create_task(ch.init_game_channel())
 
@@ -396,15 +399,16 @@ async def shotgun_start_game_command(ctx: interactions.SlashContext):
         if not game_channel.occupied:
             game_channel.occupied = True
             loop = asyncio.get_event_loop()
-            loop.create_task(game_channel.setup_game_channel(ctx.message.author))
+            loop.create_task(game_channel.setup_game_channel(ctx.user))
+            client.get_channel(game_channel.channel_id)
             await ctx.send(
-                'We have a room waiting for you '+ctx.author.mention+': ' + game_channel.mention,
+                'We have a room waiting for you ' + ctx.user.mention + ': ' + game_channel.mention,
                 delete_after=10,
                 silent=True
             )
             return
         await ctx.send(
-            'No available channels, sorry ' + ctx.author.mention + '! Try again later',
+            'No available channels, sorry ' + ctx.user.mention + '! Try again later',
             delete_after=10,
             silent=True
         )
